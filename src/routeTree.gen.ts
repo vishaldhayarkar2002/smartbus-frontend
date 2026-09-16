@@ -9,50 +9,569 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as SiteRouteImport } from './routes/_site'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as SiteIndexRouteImport } from './routes/_site.index'
+import { Route as SiteForgotPasswordRouteImport } from './routes/_site.forgot-password'
+import { Route as SiteHelpRouteImport } from './routes/_site.help'
+import { Route as SiteLoginRouteImport } from './routes/_site.login'
+import { Route as SitePaymentRouteImport } from './routes/_site.payment'
+import { Route as SiteProfileRouteImport } from './routes/_site.profile'
+import { Route as SiteRegisterRouteImport } from './routes/_site.register'
+import { Route as SiteSearchRouteImport } from './routes/_site.search'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
+import { Route as AdminBusesRouteImport } from './routes/admin.buses'
+import { Route as AdminRoutesRouteImport } from './routes/admin.routes'
+import { Route as AdminSchedulesRouteImport } from './routes/admin.schedules'
+import { Route as AdminSeatsRouteImport } from './routes/admin.seats'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as SiteBookingConfirmationRouteImport } from './routes/_site.booking.confirmation'
+import { Route as SiteBookingPassengerDetailsRouteImport } from './routes/_site.booking.passenger-details'
+import { Route as SiteBookingReviewRouteImport } from './routes/_site.booking.review'
+import { Route as SiteBookingSeatSelectionRouteImport } from './routes/_site.booking.seat-selection'
+import { Route as SiteBusBusIdRouteImport } from './routes/_site.bus.$busId'
+import { Route as SiteMyBookingsIndexRouteImport } from './routes/_site.my-bookings.index'
+import { Route as SiteMyBookingsBookingIdRouteImport } from './routes/_site.my-bookings.$bookingId'
+import { Route as SiteTicketBookingIdRouteImport } from './routes/_site.ticket.$bookingId'
 
-const IndexRoute = IndexRouteImport.update({
+const SiteRoute = SiteRouteImport.update({
+  id: '/_site',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SiteIndexRoute = SiteIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteForgotPasswordRoute = SiteForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteHelpRoute = SiteHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteLoginRoute = SiteLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SitePaymentRoute = SitePaymentRouteImport.update({
+  id: '/payment',
+  path: '/payment',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteProfileRoute = SiteProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteRegisterRoute = SiteRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteSearchRoute = SiteSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => SiteRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBookingsRoute = AdminBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBusesRoute = AdminBusesRouteImport.update({
+  id: '/buses',
+  path: '/buses',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRoutesRoute = AdminRoutesRouteImport.update({
+  id: '/routes',
+  path: '/routes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSchedulesRoute = AdminSchedulesRouteImport.update({
+  id: '/schedules',
+  path: '/schedules',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSeatsRoute = AdminSeatsRouteImport.update({
+  id: '/seats',
+  path: '/seats',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const SiteBookingConfirmationRoute = SiteBookingConfirmationRouteImport.update({
+  id: '/booking/confirmation',
+  path: '/booking/confirmation',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteBookingPassengerDetailsRoute =
+  SiteBookingPassengerDetailsRouteImport.update({
+    id: '/booking/passenger-details',
+    path: '/booking/passenger-details',
+    getParentRoute: () => SiteRoute,
+  } as any)
+const SiteBookingReviewRoute = SiteBookingReviewRouteImport.update({
+  id: '/booking/review',
+  path: '/booking/review',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteBookingSeatSelectionRoute =
+  SiteBookingSeatSelectionRouteImport.update({
+    id: '/booking/seat-selection',
+    path: '/booking/seat-selection',
+    getParentRoute: () => SiteRoute,
+  } as any)
+const SiteBusBusIdRoute = SiteBusBusIdRouteImport.update({
+  id: '/bus/$busId',
+  path: '/bus/$busId',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteMyBookingsIndexRoute = SiteMyBookingsIndexRouteImport.update({
+  id: '/my-bookings/',
+  path: '/my-bookings/',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteMyBookingsBookingIdRoute = SiteMyBookingsBookingIdRouteImport.update({
+  id: '/my-bookings/$bookingId',
+  path: '/my-bookings/$bookingId',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteTicketBookingIdRoute = SiteTicketBookingIdRouteImport.update({
+  id: '/ticket/$bookingId',
+  path: '/ticket/$bookingId',
+  getParentRoute: () => SiteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof SiteIndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/forgot-password': typeof SiteForgotPasswordRoute
+  '/help': typeof SiteHelpRoute
+  '/login': typeof SiteLoginRoute
+  '/payment': typeof SitePaymentRoute
+  '/profile': typeof SiteProfileRoute
+  '/register': typeof SiteRegisterRoute
+  '/search': typeof SiteSearchRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/buses': typeof AdminBusesRoute
+  '/admin/routes': typeof AdminRoutesRoute
+  '/admin/schedules': typeof AdminSchedulesRoute
+  '/admin/seats': typeof AdminSeatsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/': typeof AdminIndexRoute
+  '/booking/confirmation': typeof SiteBookingConfirmationRoute
+  '/booking/passenger-details': typeof SiteBookingPassengerDetailsRoute
+  '/booking/review': typeof SiteBookingReviewRoute
+  '/booking/seat-selection': typeof SiteBookingSeatSelectionRoute
+  '/bus/$busId': typeof SiteBusBusIdRoute
+  '/my-bookings/$bookingId': typeof SiteMyBookingsBookingIdRoute
+  '/ticket/$bookingId': typeof SiteTicketBookingIdRoute
+  '/my-bookings/': typeof SiteMyBookingsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/forgot-password': typeof SiteForgotPasswordRoute
+  '/help': typeof SiteHelpRoute
+  '/login': typeof SiteLoginRoute
+  '/payment': typeof SitePaymentRoute
+  '/profile': typeof SiteProfileRoute
+  '/register': typeof SiteRegisterRoute
+  '/search': typeof SiteSearchRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/buses': typeof AdminBusesRoute
+  '/admin/routes': typeof AdminRoutesRoute
+  '/admin/schedules': typeof AdminSchedulesRoute
+  '/admin/seats': typeof AdminSeatsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/': typeof SiteIndexRoute
+  '/admin': typeof AdminIndexRoute
+  '/booking/confirmation': typeof SiteBookingConfirmationRoute
+  '/booking/passenger-details': typeof SiteBookingPassengerDetailsRoute
+  '/booking/review': typeof SiteBookingReviewRoute
+  '/booking/seat-selection': typeof SiteBookingSeatSelectionRoute
+  '/bus/$busId': typeof SiteBusBusIdRoute
+  '/my-bookings/$bookingId': typeof SiteMyBookingsBookingIdRoute
+  '/ticket/$bookingId': typeof SiteTicketBookingIdRoute
+  '/my-bookings': typeof SiteMyBookingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_site': typeof SiteRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
+  '/_site/forgot-password': typeof SiteForgotPasswordRoute
+  '/_site/help': typeof SiteHelpRoute
+  '/_site/login': typeof SiteLoginRoute
+  '/_site/payment': typeof SitePaymentRoute
+  '/_site/profile': typeof SiteProfileRoute
+  '/_site/register': typeof SiteRegisterRoute
+  '/_site/search': typeof SiteSearchRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/buses': typeof AdminBusesRoute
+  '/admin/routes': typeof AdminRoutesRoute
+  '/admin/schedules': typeof AdminSchedulesRoute
+  '/admin/seats': typeof AdminSeatsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/_site/': typeof SiteIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/_site/booking/confirmation': typeof SiteBookingConfirmationRoute
+  '/_site/booking/passenger-details': typeof SiteBookingPassengerDetailsRoute
+  '/_site/booking/review': typeof SiteBookingReviewRoute
+  '/_site/booking/seat-selection': typeof SiteBookingSeatSelectionRoute
+  '/_site/bus/$busId': typeof SiteBusBusIdRoute
+  '/_site/my-bookings/$bookingId': typeof SiteMyBookingsBookingIdRoute
+  '/_site/ticket/$bookingId': typeof SiteTicketBookingIdRoute
+  '/_site/my-bookings/': typeof SiteMyBookingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/forgot-password'
+    | '/help'
+    | '/login'
+    | '/payment'
+    | '/profile'
+    | '/register'
+    | '/search'
+    | '/admin/bookings'
+    | '/admin/buses'
+    | '/admin/routes'
+    | '/admin/schedules'
+    | '/admin/seats'
+    | '/admin/users'
+    | '/admin/'
+    | '/booking/confirmation'
+    | '/booking/passenger-details'
+    | '/booking/review'
+    | '/booking/seat-selection'
+    | '/bus/$busId'
+    | '/my-bookings/$bookingId'
+    | '/ticket/$bookingId'
+    | '/my-bookings/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/forgot-password'
+    | '/help'
+    | '/login'
+    | '/payment'
+    | '/profile'
+    | '/register'
+    | '/search'
+    | '/admin/bookings'
+    | '/admin/buses'
+    | '/admin/routes'
+    | '/admin/schedules'
+    | '/admin/seats'
+    | '/admin/users'
+    | '/'
+    | '/admin'
+    | '/booking/confirmation'
+    | '/booking/passenger-details'
+    | '/booking/review'
+    | '/booking/seat-selection'
+    | '/bus/$busId'
+    | '/my-bookings/$bookingId'
+    | '/ticket/$bookingId'
+    | '/my-bookings'
+  id:
+    | '__root__'
+    | '/_site'
+    | '/admin'
+    | '/_site/forgot-password'
+    | '/_site/help'
+    | '/_site/login'
+    | '/_site/payment'
+    | '/_site/profile'
+    | '/_site/register'
+    | '/_site/search'
+    | '/admin/bookings'
+    | '/admin/buses'
+    | '/admin/routes'
+    | '/admin/schedules'
+    | '/admin/seats'
+    | '/admin/users'
+    | '/_site/'
+    | '/admin/'
+    | '/_site/booking/confirmation'
+    | '/_site/booking/passenger-details'
+    | '/_site/booking/review'
+    | '/_site/booking/seat-selection'
+    | '/_site/bus/$busId'
+    | '/_site/my-bookings/$bookingId'
+    | '/_site/ticket/$bookingId'
+    | '/_site/my-bookings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  SiteRoute: typeof SiteRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_site': {
+      id: '/_site'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof SiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_site/': {
+      id: '/_site/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof SiteIndexRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/forgot-password': {
+      id: '/_site/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof SiteForgotPasswordRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/help': {
+      id: '/_site/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof SiteHelpRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/login': {
+      id: '/_site/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof SiteLoginRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/payment': {
+      id: '/_site/payment'
+      path: '/payment'
+      fullPath: '/payment'
+      preLoaderRoute: typeof SitePaymentRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/profile': {
+      id: '/_site/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof SiteProfileRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/register': {
+      id: '/_site/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof SiteRegisterRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/search': {
+      id: '/_site/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SiteSearchRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/bookings': {
+      id: '/admin/bookings'
+      path: '/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AdminBookingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/buses': {
+      id: '/admin/buses'
+      path: '/buses'
+      fullPath: '/admin/buses'
+      preLoaderRoute: typeof AdminBusesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/routes': {
+      id: '/admin/routes'
+      path: '/routes'
+      fullPath: '/admin/routes'
+      preLoaderRoute: typeof AdminRoutesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/schedules': {
+      id: '/admin/schedules'
+      path: '/schedules'
+      fullPath: '/admin/schedules'
+      preLoaderRoute: typeof AdminSchedulesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/seats': {
+      id: '/admin/seats'
+      path: '/seats'
+      fullPath: '/admin/seats'
+      preLoaderRoute: typeof AdminSeatsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_site/booking/confirmation': {
+      id: '/_site/booking/confirmation'
+      path: '/booking/confirmation'
+      fullPath: '/booking/confirmation'
+      preLoaderRoute: typeof SiteBookingConfirmationRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/booking/passenger-details': {
+      id: '/_site/booking/passenger-details'
+      path: '/booking/passenger-details'
+      fullPath: '/booking/passenger-details'
+      preLoaderRoute: typeof SiteBookingPassengerDetailsRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/booking/review': {
+      id: '/_site/booking/review'
+      path: '/booking/review'
+      fullPath: '/booking/review'
+      preLoaderRoute: typeof SiteBookingReviewRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/booking/seat-selection': {
+      id: '/_site/booking/seat-selection'
+      path: '/booking/seat-selection'
+      fullPath: '/booking/seat-selection'
+      preLoaderRoute: typeof SiteBookingSeatSelectionRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/bus/$busId': {
+      id: '/_site/bus/$busId'
+      path: '/bus/$busId'
+      fullPath: '/bus/$busId'
+      preLoaderRoute: typeof SiteBusBusIdRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/my-bookings/': {
+      id: '/_site/my-bookings/'
+      path: '/my-bookings'
+      fullPath: '/my-bookings/'
+      preLoaderRoute: typeof SiteMyBookingsIndexRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/my-bookings/$bookingId': {
+      id: '/_site/my-bookings/$bookingId'
+      path: '/my-bookings/$bookingId'
+      fullPath: '/my-bookings/$bookingId'
+      preLoaderRoute: typeof SiteMyBookingsBookingIdRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/ticket/$bookingId': {
+      id: '/_site/ticket/$bookingId'
+      path: '/ticket/$bookingId'
+      fullPath: '/ticket/$bookingId'
+      preLoaderRoute: typeof SiteTicketBookingIdRouteImport
+      parentRoute: typeof SiteRoute
     }
   }
 }
 
+interface SiteRouteChildren {
+  SiteForgotPasswordRoute: typeof SiteForgotPasswordRoute
+  SiteHelpRoute: typeof SiteHelpRoute
+  SiteLoginRoute: typeof SiteLoginRoute
+  SitePaymentRoute: typeof SitePaymentRoute
+  SiteProfileRoute: typeof SiteProfileRoute
+  SiteRegisterRoute: typeof SiteRegisterRoute
+  SiteSearchRoute: typeof SiteSearchRoute
+  SiteIndexRoute: typeof SiteIndexRoute
+  SiteBookingConfirmationRoute: typeof SiteBookingConfirmationRoute
+  SiteBookingPassengerDetailsRoute: typeof SiteBookingPassengerDetailsRoute
+  SiteBookingReviewRoute: typeof SiteBookingReviewRoute
+  SiteBookingSeatSelectionRoute: typeof SiteBookingSeatSelectionRoute
+  SiteBusBusIdRoute: typeof SiteBusBusIdRoute
+  SiteMyBookingsBookingIdRoute: typeof SiteMyBookingsBookingIdRoute
+  SiteTicketBookingIdRoute: typeof SiteTicketBookingIdRoute
+  SiteMyBookingsIndexRoute: typeof SiteMyBookingsIndexRoute
+}
+
+const SiteRouteChildren: SiteRouteChildren = {
+  SiteForgotPasswordRoute: SiteForgotPasswordRoute,
+  SiteHelpRoute: SiteHelpRoute,
+  SiteLoginRoute: SiteLoginRoute,
+  SitePaymentRoute: SitePaymentRoute,
+  SiteProfileRoute: SiteProfileRoute,
+  SiteRegisterRoute: SiteRegisterRoute,
+  SiteSearchRoute: SiteSearchRoute,
+  SiteIndexRoute: SiteIndexRoute,
+  SiteBookingConfirmationRoute: SiteBookingConfirmationRoute,
+  SiteBookingPassengerDetailsRoute: SiteBookingPassengerDetailsRoute,
+  SiteBookingReviewRoute: SiteBookingReviewRoute,
+  SiteBookingSeatSelectionRoute: SiteBookingSeatSelectionRoute,
+  SiteBusBusIdRoute: SiteBusBusIdRoute,
+  SiteMyBookingsBookingIdRoute: SiteMyBookingsBookingIdRoute,
+  SiteTicketBookingIdRoute: SiteTicketBookingIdRoute,
+  SiteMyBookingsIndexRoute: SiteMyBookingsIndexRoute,
+}
+
+const SiteRouteWithChildren = SiteRoute._addFileChildren(SiteRouteChildren)
+
+interface AdminRouteChildren {
+  AdminBookingsRoute: typeof AdminBookingsRoute
+  AdminBusesRoute: typeof AdminBusesRoute
+  AdminRoutesRoute: typeof AdminRoutesRoute
+  AdminSchedulesRoute: typeof AdminSchedulesRoute
+  AdminSeatsRoute: typeof AdminSeatsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminBookingsRoute: AdminBookingsRoute,
+  AdminBusesRoute: AdminBusesRoute,
+  AdminRoutesRoute: AdminRoutesRoute,
+  AdminSchedulesRoute: AdminSchedulesRoute,
+  AdminSeatsRoute: AdminSeatsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  SiteRoute: SiteRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
