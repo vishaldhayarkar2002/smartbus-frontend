@@ -49,8 +49,8 @@ function SeatButton({
 }: {
   seat: Seat;
   selected: boolean;
-  onToggle?: (seat: Seat) => void;
-  readOnly?: boolean;
+  onToggle?: ((seat: Seat) => void) | undefined;
+  readOnly?: boolean | undefined;
 }) {
   const status: SeatStatus = selected ? "SELECTED" : seat.status === "SELECTED" ? "AVAILABLE" : seat.status;
   const disabled = readOnly || status === "BOOKED" || status === "LOCKED";
@@ -95,8 +95,8 @@ function DeckGrid({
 }: {
   seats: Seat[];
   selectedIds: string[];
-  onToggle?: (seat: Seat) => void;
-  readOnly?: boolean;
+  onToggle?: ((seat: Seat) => void) | undefined;
+  readOnly?: boolean | undefined;
 }) {
   const rows = Array.from(new Set(seats.map((s) => s.position.row))).sort((a, b) => a - b);
   const maxColumn = Math.max(...seats.map((s) => s.position.column));
@@ -139,9 +139,9 @@ export function SeatLayout({
   readOnly = false,
 }: {
   seats: Seat[];
-  selectedIds?: string[];
-  onToggle?: (seat: Seat) => void;
-  readOnly?: boolean;
+  selectedIds?: string[] | undefined;
+  onToggle?: ((seat: Seat) => void) | undefined;
+  readOnly?: boolean | undefined;
 }) {
   const lower = seats.filter((s) => s.position.deck === "LOWER");
   const upper = seats.filter((s) => s.position.deck === "UPPER");
