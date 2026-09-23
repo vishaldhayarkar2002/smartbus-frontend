@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SiteRouteImport } from './routes/_site'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as SiteIndexRouteImport } from './routes/_site.index'
+import { Route as SiteAccessDeniedRouteImport } from './routes/_site.access-denied'
 import { Route as SiteForgotPasswordRouteImport } from './routes/_site.forgot-password'
 import { Route as SiteHelpRouteImport } from './routes/_site.help'
 import { Route as SiteLoginRouteImport } from './routes/_site.login'
@@ -47,6 +48,11 @@ const AdminRoute = AdminRouteImport.update({
 const SiteIndexRoute = SiteIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteAccessDeniedRoute = SiteAccessDeniedRouteImport.update({
+  id: '/access-denied',
+  path: '/access-denied',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteForgotPasswordRoute = SiteForgotPasswordRouteImport.update({
@@ -165,6 +171,7 @@ const SiteTicketBookingIdRoute = SiteTicketBookingIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/access-denied': typeof SiteAccessDeniedRoute
   '/forgot-password': typeof SiteForgotPasswordRoute
   '/help': typeof SiteHelpRoute
   '/login': typeof SiteLoginRoute
@@ -189,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/my-bookings/': typeof SiteMyBookingsIndexRoute
 }
 export interface FileRoutesByTo {
+  '/access-denied': typeof SiteAccessDeniedRoute
   '/forgot-password': typeof SiteForgotPasswordRoute
   '/help': typeof SiteHelpRoute
   '/login': typeof SiteLoginRoute
@@ -217,6 +225,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_site': typeof SiteRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
+  '/_site/access-denied': typeof SiteAccessDeniedRoute
   '/_site/forgot-password': typeof SiteForgotPasswordRoute
   '/_site/help': typeof SiteHelpRoute
   '/_site/login': typeof SiteLoginRoute
@@ -246,6 +255,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/access-denied'
     | '/forgot-password'
     | '/help'
     | '/login'
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/my-bookings/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/access-denied'
     | '/forgot-password'
     | '/help'
     | '/login'
@@ -297,6 +308,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_site'
     | '/admin'
+    | '/_site/access-denied'
     | '/_site/forgot-password'
     | '/_site/help'
     | '/_site/login'
@@ -348,6 +360,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof SiteIndexRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/access-denied': {
+      id: '/_site/access-denied'
+      path: '/access-denied'
+      fullPath: '/access-denied'
+      preLoaderRoute: typeof SiteAccessDeniedRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/forgot-password': {
@@ -508,6 +527,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface SiteRouteChildren {
+  SiteAccessDeniedRoute: typeof SiteAccessDeniedRoute
   SiteForgotPasswordRoute: typeof SiteForgotPasswordRoute
   SiteHelpRoute: typeof SiteHelpRoute
   SiteLoginRoute: typeof SiteLoginRoute
@@ -527,6 +547,7 @@ interface SiteRouteChildren {
 }
 
 const SiteRouteChildren: SiteRouteChildren = {
+  SiteAccessDeniedRoute: SiteAccessDeniedRoute,
   SiteForgotPasswordRoute: SiteForgotPasswordRoute,
   SiteHelpRoute: SiteHelpRoute,
   SiteLoginRoute: SiteLoginRoute,
