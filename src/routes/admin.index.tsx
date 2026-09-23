@@ -89,7 +89,7 @@ function AdminDashboard() {
 
           <section className="surface-card p-5">
             <h2 className="font-bold">Recent bookings</h2>
-            <div className="mt-3 overflow-x-auto">
+            <div className="mt-3 overflow-x-auto" tabIndex={0} role="region" aria-label="Recent bookings table">
               <table className="w-full min-w-[640px] text-sm">
                 <thead>
                   <tr className="border-b border-border text-left text-xs uppercase text-muted-foreground">
