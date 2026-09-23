@@ -195,6 +195,26 @@
     outline: 2px solid var(--color-ring);
     outline-offset: 2px;
   }
+
+  button:focus-visible,
+  a:focus-visible,
+  [role="tab"]:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
 @utility surface-card {
@@ -211,5 +231,20 @@
   .print-area {
     box-shadow: none !important;
     border: 1px solid #ccc !important;
+  }
+}
+
+@utility skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  border-radius: 0.5rem;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  &:focus {
+    top: 1rem;
   }
 }

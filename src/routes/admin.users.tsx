@@ -144,7 +144,7 @@ function AdminUsers() {
           description="Try a different name, role or status."
         />
       ) : (
-        <div className="surface-card overflow-x-auto p-5">
+        <div className="surface-card overflow-x-auto p-5" tabIndex={0} role="region" aria-label="Scrollable data table">
           <table className="w-full min-w-[760px] text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs uppercase text-muted-foreground">

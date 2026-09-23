@@ -1,6 +1,7 @@
 /** Mock auth service. Future: POST /api/auth/login, POST /api/auth/register */
 import { mockFailure, mockRequest } from "@/services/api";
-import { DEMO_CREDENTIALS, mockUsers } from "@/data/mockData";
+import { DEMO_CREDENTIALS } from "@/data/mockData";
+import { nextId, readTable, writeTable } from "@/services/mockDb";
 import type { AuthResponse, LoginRequest, RegisterRequest, User } from "@/types";
 
 function fakeToken(user: User) {
@@ -15,20 +16,24 @@ export async function login(payload: LoginRequest): Promise<AuthResponse> {
     payload.email === DEMO_CREDENTIALS.admin.email &&
     payload.password === DEMO_CREDENTIALS.admin.password;
 
-  if (!isDemoUser && !isDemoAdmin) {
+  const registered = readTable("users").find((u) => u.email === payload.email);
+  if (!isDemoUser && !isDemoAdmin && !registered) {
     return mockFailure("Invalid email or password. Try the demo credentials shown below.");
   }
-  const user = mockUsers.find((u) => u.email === payload.email)!;
+  const user = readTable("users").find((u) => u.email === payload.email);
+  if (!user) return mockFailure("Account not found.");
+  if (user.status === "INACTIVE") return mockFailure("This account has been deactivated. Contact support.");
   return mockRequest({ token: fakeToken(user), user });
 }
 
 export async function register(payload: RegisterRequest): Promise<AuthResponse> {
   // return api.post<AuthResponse>("/auth/register", payload).then(r => r.data)
-  if (mockUsers.some((u) => u.email === payload.email)) {
+  const users = readTable("users");
+  if (users.some((u) => u.email === payload.email)) {
     return mockFailure("An account with this email already exists.");
   }
   const user: User = {
-    id: Math.max(...mockUsers.map((u) => u.id)) + 1,
+    id: nextId(users),
     fullName: payload.fullName,
     email: payload.email,
     mobile: payload.mobile,
@@ -36,7 +41,7 @@ export async function register(payload: RegisterRequest): Promise<AuthResponse> 
     status: "ACTIVE",
     createdAt: new Date().toISOString().slice(0, 10),
   };
-  mockUsers.push(user);
+  writeTable("users", [...users, user]);
   return mockRequest({ token: fakeToken(user), user });
 }
 
@@ -54,5 +59,6 @@ export async function changePassword(current: string, next: string): Promise<{ m
 
 export async function updateProfile(user: User): Promise<User> {
   // return api.put<User>("/users/me", user).then(r => r.data)
+  writeTable("users", readTable("users").map((u) => (u.id === user.id ? user : u)));
   return mockRequest(user);
 }

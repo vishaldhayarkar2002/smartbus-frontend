@@ -160,7 +160,7 @@ function AdminSchedules() {
           description="Add a schedule to make a bus bookable on a route."
         />
       ) : (
-        <div className="surface-card overflow-x-auto p-5">
+        <div className="surface-card overflow-x-auto p-5" tabIndex={0} role="region" aria-label="Scrollable data table">
           <table className="w-full min-w-[860px] text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs uppercase text-muted-foreground">
