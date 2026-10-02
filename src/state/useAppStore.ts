@@ -69,7 +69,7 @@ const persistedSchema = z.object({
 
 export const useAppStore = create<AppState>()(
   persist(
-    () => ({
+    (): AppState => ({
       auth: { user: null, token: null, isAuthenticated: false, hydrated: false },
       booking: emptyBooking,
       search: { from: "Pune", to: "Mumbai", journeyDate: DEFAULT_JOURNEY_DATE },
@@ -81,7 +81,7 @@ export const useAppStore = create<AppState>()(
       skipHydration: true,
       partialize: (s) => ({ auth: { token: s.auth.token, user: s.auth.user }, booking: s.booking }),
       migrate: () => undefined, // unknown older versions are dropped
-      merge: (persisted, current) => {
+      merge: (persisted, current: AppState): AppState => {
         const parsed = persistedSchema.safeParse(persisted);
         if (!parsed.success) return { ...current, auth: { ...current.auth, hydrated: true } };
         const { auth, booking } = parsed.data;
@@ -140,7 +140,7 @@ export function toggleSeat(seat: Seat) {
       b.passengers.find((p) => p.seatId === s.id) ?? {
         name: "",
         age: "",
-        gender: "",
+        gender: "" as Passenger["gender"],
         mobile: "",
         seatId: s.id,
         seatNumber: s.seatNumber,
