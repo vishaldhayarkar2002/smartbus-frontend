@@ -139,7 +139,7 @@ export function toggleSeat(seat: Seat) {
     (s) =>
       b.passengers.find((p) => p.seatId === s.id) ?? {
         name: "",
-        age: "",
+        age: "" as const,
         gender: "" as Passenger["gender"],
         mobile: "",
         seatId: s.id,
