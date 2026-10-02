@@ -38,8 +38,7 @@ export function SearchCard({ compact = false }: { compact?: boolean }) {
       toast.error("Please choose a journey date.");
       return;
     }
-    setSearch({ from, to, journeyDate });
-    navigate({ to: "/search" });
+    navigate({ to: "/search", search: { from, to, journeyDate } });
   }
 
   return (

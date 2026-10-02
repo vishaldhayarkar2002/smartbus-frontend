@@ -81,8 +81,7 @@ function HomePage() {
   const journeyDate = useAppStore((state) => state.search.journeyDate);
 
   function openRoute(from: string, to: string) {
-    setSearch({ from, to, journeyDate });
-    navigate({ to: "/search" });
+    navigate({ to: "/search", search: { from, to, journeyDate } });
   }
 
   return (

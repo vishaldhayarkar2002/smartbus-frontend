@@ -1,5 +1,9 @@
-import { useAppStore } from "@/state/useAppStore";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { setSearch } from "@/state/useAppStore";
+import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { z } from "zod";
+import { DEFAULT_JOURNEY_DATE } from "@/data/mockData";
 import { createFileRoute } from "@tanstack/react-router";
 import { BusFront, SlidersHorizontal } from "lucide-react";
 import { SearchCard } from "@/components/common/SearchCard";
@@ -28,7 +32,14 @@ import {
   timeToMinutes,
 } from "@/utils/format";
 
+const searchSchema = z.object({
+  from: fallback(z.string(), "Pune").default("Pune"),
+  to: fallback(z.string(), "Mumbai").default("Mumbai"),
+  journeyDate: fallback(z.string(), DEFAULT_JOURNEY_DATE).default(DEFAULT_JOURNEY_DATE),
+});
+
 export const Route = createFileRoute("/_site/search")({
+  validateSearch: zodValidator(searchSchema),
   head: () => ({
     meta: [
       { title: "Bus search results — SmartBus" },
@@ -52,10 +63,16 @@ export const Route = createFileRoute("/_site/search")({
 const MAX_PRICE = 2500;
 
 function SearchPage() {
-  const search = useAppStore((state) => state.search);
-  const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const search = Route.useSearch();
+  useEffect(() => setSearch(search), [search]);
+  const query = useQuery({
+    queryKey: ["buses", "search", search.from, search.to, search.journeyDate],
+    queryFn: () => searchBuses(search),
+  });
+  const schedules = useMemo(() => query.data ?? [], [query.data]);
+  const loading = query.isPending;
+  const error = query.error ? query.error.message : null;
+  const load = () => void query.refetch();
 
   const [departureSlots, setDepartureSlots] = useState<string[]>([]);
   const [arrivalSlots, setArrivalSlots] = useState<string[]>([]);
@@ -67,22 +84,6 @@ function SearchPage() {
   const [operators, setOperators] = useState<string[]>([]);
   const [sort, setSort] = useState<SortOption>("EARLIEST_DEPARTURE");
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const results = await searchBuses(search);
-      setSchedules(results);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load buses.");
-    } finally {
-      setLoading(false);
-    }
-  }, [search]);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
 
   const allOperators = useMemo(
     () => Array.from(new Set(schedules.map((s) => s.bus.operator))).sort(),
