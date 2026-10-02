@@ -1,3 +1,4 @@
+import { useAppStore, updateUser } from "@/state/useAppStore";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { RequireAuth } from "@/components/common/RequireAuth";
@@ -7,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { changePassword, updateProfile } from "@/services/authService";
 import { formatShortDate } from "@/utils/format";
 import { toast } from "sonner";
-import { useAppStore, updateUser } from "@/state/useAppStore";
 
 export const Route = createFileRoute("/_site/profile")({
   head: () => ({

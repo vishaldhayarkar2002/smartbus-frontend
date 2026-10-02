@@ -1,3 +1,4 @@
+import { useAppStore } from "@/state/useAppStore";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Pencil } from "lucide-react";
 import { BookingSteps } from "@/components/booking/BookingSteps";
@@ -7,7 +8,6 @@ import { EmptyState } from "@/components/common/StateBlocks";
 import { RequireAuth } from "@/components/common/RequireAuth";
 import { Button } from "@/components/ui/button";
 import { busTypeLabel, formatLongDate } from "@/utils/format";
-import { useAppStore } from "@/state/useAppStore";
 
 export const Route = createFileRoute("/_site/booking/review")({
   head: () => ({

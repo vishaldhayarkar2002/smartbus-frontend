@@ -1,7 +1,7 @@
+import { useAppStore, expireSeatLock } from "@/state/useAppStore";
 import { useEffect, useState } from "react";
 import { Timer } from "lucide-react";
 import { formatCountdown } from "@/utils/format";
-import { useAppStore, expireSeatLock } from "@/state/useAppStore";
 
 /**
  * Single effect-scoped interval that counts the 5-minute seat hold down.

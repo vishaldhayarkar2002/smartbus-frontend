@@ -1,3 +1,4 @@
+import { useAppStore, setSearch } from "@/state/useAppStore";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeftRight, CalendarDays, MapPin, Search } from "lucide-react";
@@ -5,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-import { useAppStore, setSearch } from "@/state/useAppStore";
   Select,
   SelectContent,
   SelectItem,

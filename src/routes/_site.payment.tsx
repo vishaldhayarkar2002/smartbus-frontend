@@ -1,3 +1,4 @@
+import { useAppStore, setConfirmedBooking } from "@/state/useAppStore";
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Banknote, CreditCard, Loader2, Lock, Smartphone, XCircle } from "lucide-react";
@@ -11,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-import { useAppStore, setConfirmedBooking } from "@/state/useAppStore";
   Select,
   SelectContent,
   SelectItem,

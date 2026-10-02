@@ -1,9 +1,9 @@
+import { useAppStore, logout } from "@/state/useAppStore";
 import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { CircleUser, LayoutDashboard, LogOut, Menu, Ticket, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-import { useAppStore, logout } from "@/state/useAppStore";
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,

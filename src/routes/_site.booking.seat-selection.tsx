@@ -1,3 +1,4 @@
+import { useAppStore, clearLockExpiredNotice, toggleSeat } from "@/state/useAppStore";
 import { useCallback, useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, TimerReset } from "lucide-react";
@@ -11,7 +12,6 @@ import { getSeats } from "@/services/busService";
 import type { Seat } from "@/types";
 import { formatLongDate } from "@/utils/format";
 import { toast } from "sonner";
-import { useAppStore, clearLockExpiredNotice, toggleSeat } from "@/state/useAppStore";
 
 export const Route = createFileRoute("/_site/booking/seat-selection")({
   head: () => ({

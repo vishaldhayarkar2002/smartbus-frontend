@@ -1,3 +1,4 @@
+import { useAppStore, selectSchedule, setBoardingPoint, setDroppingPoint } from "@/state/useAppStore";
 import { useCallback, useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Clock, MapPin, Star } from "lucide-react";
@@ -12,7 +13,6 @@ import { getScheduleById } from "@/services/busService";
 import type { Schedule } from "@/types";
 import { busTypeLabel, formatCurrency, formatLongDate } from "@/utils/format";
 import { toast } from "sonner";
-import { useAppStore, selectSchedule, setBoardingPoint, setDroppingPoint } from "@/state/useAppStore";
 
 export const Route = createFileRoute("/_site/bus/$busId")({
   head: () => ({

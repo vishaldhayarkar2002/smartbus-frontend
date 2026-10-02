@@ -1,3 +1,4 @@
+import { useAppStore, resetBooking } from "@/state/useAppStore";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { CheckCircle2, Ticket } from "lucide-react";
 import { FareSummary } from "@/components/booking/FareSummary";
@@ -5,7 +6,6 @@ import { EmptyState } from "@/components/common/StateBlocks";
 import { RequireAuth } from "@/components/common/RequireAuth";
 import { Button } from "@/components/ui/button";
 import { formatLongDate } from "@/utils/format";
-import { useAppStore, resetBooking } from "@/state/useAppStore";
 
 export const Route = createFileRoute("/_site/booking/confirmation")({
   head: () => ({

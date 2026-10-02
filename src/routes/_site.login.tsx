@@ -1,3 +1,4 @@
+import { useAppStore, setCredentials } from "@/state/useAppStore";
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { LogIn } from "lucide-react";
@@ -7,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { DEMO_CREDENTIALS } from "@/data/mockData";
 import { login } from "@/services/authService";
 import { toast } from "sonner";
-import { useAppStore, setCredentials } from "@/state/useAppStore";
 
 export const Route = createFileRoute("/_site/login")({
   head: () => ({

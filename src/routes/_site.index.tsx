@@ -1,6 +1,6 @@
+import { useAppStore, setSearch } from "@/state/useAppStore";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
-import { useAppStore, setSearch } from "@/state/useAppStore";
   BadgePercent,
   BusFront,
   Headphones,

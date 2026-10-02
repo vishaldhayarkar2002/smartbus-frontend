@@ -1,3 +1,4 @@
+import { useAppStore, setPassengers } from "@/state/useAppStore";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { BookingSteps } from "@/components/booking/BookingSteps";
@@ -9,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-import { useAppStore, setPassengers } from "@/state/useAppStore";
   Select,
   SelectContent,
   SelectItem,

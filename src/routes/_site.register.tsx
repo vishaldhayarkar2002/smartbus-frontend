@@ -1,3 +1,4 @@
+import { useAppStore, setCredentials } from "@/state/useAppStore";
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { UserPlus } from "lucide-react";
@@ -6,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { register } from "@/services/authService";
 import { toast } from "sonner";
-import { useAppStore, setCredentials } from "@/state/useAppStore";
 
 export const Route = createFileRoute("/_site/register")({
   head: () => ({
