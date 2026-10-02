@@ -10,7 +10,8 @@ import type { AuthResponse } from "@/types";
 function readSession(): AuthResponse | null {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEYS.auth);
-    return raw ? (JSON.parse(raw) as AuthResponse) : null;
+    const auth = raw ? JSON.parse(raw)?.state?.auth : null;
+    return auth?.token && auth.user ? (auth as AuthResponse) : null;
   } catch {
     return null;
   }
