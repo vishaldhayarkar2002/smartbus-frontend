@@ -1,3 +1,4 @@
+import { useAppStore, setPassengers } from "@/state/useAppStore";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { BookingSteps } from "@/components/booking/BookingSteps";
@@ -15,8 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setPassengers } from "@/store/slices/bookingSlice";
 import type { Passenger } from "@/types";
 import { seatTypeLabel } from "@/utils/format";
 import { toast } from "sonner";
@@ -41,14 +40,13 @@ export const Route = createFileRoute("/_site/booking/passenger-details")({
 
 function PassengerDetailsPage() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { selectedSeats, passengers, fare } = useAppSelector((state) => state.booking);
+  const { selectedSeats, passengers, fare } = useAppStore((state) => state.booking);
 
   function update(index: number, patch: Partial<Passenger>) {
     const next = passengers.map((passenger, i) =>
       i === index ? { ...passenger, ...patch } : passenger,
     );
-    dispatch(setPassengers(next));
+    setPassengers(next);
   }
 
   function handleSubmit(event: React.FormEvent) {

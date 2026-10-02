@@ -1,3 +1,4 @@
+import { useAppStore, setCredentials } from "@/state/useAppStore";
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { LogIn } from "lucide-react";
@@ -6,8 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DEMO_CREDENTIALS } from "@/data/mockData";
 import { login } from "@/services/authService";
-import { useAppDispatch } from "@/store/hooks";
-import { setCredentials } from "@/store/slices/authSlice";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_site/login")({
@@ -25,7 +24,6 @@ export const Route = createFileRoute("/_site/login")({
 });
 
 function LoginPage() {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,7 +36,7 @@ function LoginPage() {
     setError(null);
     try {
       const result = await login({ email: email.trim(), password });
-      dispatch(setCredentials(result));
+      setCredentials(result);
       toast.success(`Welcome back, ${result.user.fullName.split(" ")[0]}!`);
       navigate({ to: result.user.role === "ADMIN" ? "/admin" : "/my-bookings" });
     } catch (err) {

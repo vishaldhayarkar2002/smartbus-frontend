@@ -1,3 +1,4 @@
+import { useAppStore, setSearch } from "@/state/useAppStore";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   BadgePercent,
@@ -11,9 +12,6 @@ import {
 import { SearchCard } from "@/components/common/SearchCard";
 import { Button } from "@/components/ui/button";
 import { POPULAR_ROUTES } from "@/data/mockData";
-import { useAppDispatch } from "@/store/hooks";
-import { setSearch } from "@/store/slices/searchSlice";
-import { useAppSelector } from "@/store/hooks";
 import { formatCurrency } from "@/utils/format";
 
 export const Route = createFileRoute("/_site/")({
@@ -79,12 +77,11 @@ const benefits = [
 ];
 
 function HomePage() {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const journeyDate = useAppSelector((state) => state.search.journeyDate);
+  const journeyDate = useAppStore((state) => state.search.journeyDate);
 
   function openRoute(from: string, to: string) {
-    dispatch(setSearch({ from, to, journeyDate }));
+    setSearch({ from, to, journeyDate });
     navigate({ to: "/search" });
   }
 

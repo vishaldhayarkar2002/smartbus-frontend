@@ -1,3 +1,4 @@
+import { useAppStore } from "@/state/useAppStore";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Pencil } from "lucide-react";
 import { BookingSteps } from "@/components/booking/BookingSteps";
@@ -6,7 +7,6 @@ import { FareSummary } from "@/components/booking/FareSummary";
 import { EmptyState } from "@/components/common/StateBlocks";
 import { RequireAuth } from "@/components/common/RequireAuth";
 import { Button } from "@/components/ui/button";
-import { useAppSelector } from "@/store/hooks";
 import { busTypeLabel, formatLongDate } from "@/utils/format";
 
 export const Route = createFileRoute("/_site/booking/review")({
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/_site/booking/review")({
 function ReviewPage() {
   const navigate = useNavigate();
   const { selectedSchedule, selectedSeats, passengers, fare, boardingPoint, droppingPoint } =
-    useAppSelector((state) => state.booking);
+    useAppStore((state) => state.booking);
 
   if (!selectedSchedule || selectedSeats.length === 0) {
     return (

@@ -1,3 +1,4 @@
+import { useAppStore } from "@/state/useAppStore";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { BusFront, SlidersHorizontal } from "lucide-react";
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { searchBuses } from "@/services/busService";
-import { useAppSelector } from "@/store/hooks";
 import type { Schedule, SortOption } from "@/types";
 import {
   TIME_SLOTS,
@@ -52,7 +52,7 @@ export const Route = createFileRoute("/_site/search")({
 const MAX_PRICE = 2500;
 
 function SearchPage() {
-  const search = useAppSelector((state) => state.search);
+  const search = useAppStore((state) => state.search);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

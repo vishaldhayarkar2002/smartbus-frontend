@@ -1,3 +1,4 @@
+import { useAppStore, setCredentials } from "@/state/useAppStore";
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { UserPlus } from "lucide-react";
@@ -5,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { register } from "@/services/authService";
-import { useAppDispatch } from "@/store/hooks";
-import { setCredentials } from "@/store/slices/authSlice";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_site/register")({
@@ -27,7 +26,6 @@ export const Route = createFileRoute("/_site/register")({
 });
 
 function RegisterPage() {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [form, setForm] = useState({
     fullName: "",
@@ -66,7 +64,7 @@ function RegisterPage() {
         mobile: form.mobile,
         password: form.password,
       });
-      dispatch(setCredentials(result));
+      setCredentials(result);
       toast.success("Account created. Happy travels!");
       navigate({ to: "/" });
     } catch (err) {

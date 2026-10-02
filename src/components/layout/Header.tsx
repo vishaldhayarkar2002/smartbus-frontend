@@ -1,3 +1,4 @@
+import { useAppStore, logout } from "@/state/useAppStore";
 import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { CircleUser, LayoutDashboard, LogOut, Menu, Ticket, User, X } from "lucide-react";
@@ -11,8 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Logo } from "@/components/layout/Logo";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { logout } from "@/store/slices/authSlice";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -25,12 +24,11 @@ const navItems = [
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
+  const { isAuthenticated, user } = useAppStore((state) => state.auth);
   const navigate = useNavigate();
 
   function handleLogout() {
-    dispatch(logout());
+    logout();
     toast.success("You have been signed out.");
     navigate({ to: "/" });
   }

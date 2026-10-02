@@ -1,3 +1,4 @@
+import { useAppStore, setSearch } from "@/state/useAppStore";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeftRight, CalendarDays, MapPin, Search } from "lucide-react";
@@ -12,14 +13,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CITIES } from "@/data/mockData";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setSearch } from "@/store/slices/searchSlice";
 import { toast } from "sonner";
 
 /** City + date search form. Used on the home page and above search results. */
 export function SearchCard({ compact = false }: { compact?: boolean }) {
-  const search = useAppSelector((state) => state.search);
-  const dispatch = useAppDispatch();
+  const search = useAppStore((state) => state.search);
   const navigate = useNavigate();
   const [from, setFrom] = useState(search.from);
   const [to, setTo] = useState(search.to);
@@ -40,7 +38,7 @@ export function SearchCard({ compact = false }: { compact?: boolean }) {
       toast.error("Please choose a journey date.");
       return;
     }
-    dispatch(setSearch({ from, to, journeyDate }));
+    setSearch({ from, to, journeyDate });
     navigate({ to: "/search" });
   }
 

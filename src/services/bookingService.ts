@@ -58,6 +58,6 @@ export function getBookedSeatIds(scheduleId: number, journeyDate?: string): Set<
 /** Generates a booking reference like SB2026092500123. */
 export function generateBookingId(journeyDate: string): string {
   const compact = journeyDate.replaceAll("-", "");
-  const suffix = String(Math.floor(100 + Math.random() * 899));
-  return `SB${compact}00${suffix}`;
+  const suffix = crypto.randomUUID().replaceAll("-", "").slice(0, 8).toUpperCase();
+  return `SB${compact}${suffix}`;
 }
