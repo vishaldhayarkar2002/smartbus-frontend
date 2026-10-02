@@ -5,10 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { changePassword, updateProfile } from "@/services/authService";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { updateUser } from "@/store/slices/authSlice";
 import { formatShortDate } from "@/utils/format";
 import { toast } from "sonner";
+import { useAppStore, updateUser } from "@/state/useAppStore";
 
 export const Route = createFileRoute("/_site/profile")({
   head: () => ({
@@ -29,8 +28,7 @@ export const Route = createFileRoute("/_site/profile")({
 });
 
 function ProfilePage() {
-  const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.auth.user)!;
+  const user = useAppStore((state) => state.auth.user)!;
   const [fullName, setFullName] = useState(user.fullName);
   const [mobile, setMobile] = useState(user.mobile);
   const [saving, setSaving] = useState(false);
@@ -46,7 +44,7 @@ function ProfilePage() {
     setSaving(true);
     try {
       const updated = await updateProfile({ ...user, fullName: fullName.trim(), mobile });
-      dispatch(updateUser(updated));
+      updateUser(updated);
       toast.success("Profile updated.");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not update your profile.");

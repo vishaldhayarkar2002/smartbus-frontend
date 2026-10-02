@@ -4,9 +4,8 @@ import { FareSummary } from "@/components/booking/FareSummary";
 import { EmptyState } from "@/components/common/StateBlocks";
 import { RequireAuth } from "@/components/common/RequireAuth";
 import { Button } from "@/components/ui/button";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { resetBooking } from "@/store/slices/bookingSlice";
 import { formatLongDate } from "@/utils/format";
+import { useAppStore, resetBooking } from "@/state/useAppStore";
 
 export const Route = createFileRoute("/_site/booking/confirmation")({
   head: () => ({
@@ -28,8 +27,7 @@ export const Route = createFileRoute("/_site/booking/confirmation")({
 
 function ConfirmationPage() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const booking = useAppSelector((state) => state.booking.confirmedBooking);
+  const booking = useAppStore((state) => state.booking.confirmedBooking);
 
   if (!booking) {
     return (
@@ -91,7 +89,7 @@ function ConfirmationPage() {
         <Button
           variant="ghost"
           onClick={() => {
-            dispatch(resetBooking());
+            resetBooking();
             navigate({ to: "/" });
           }}
         >

@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { Timer } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { expireSeatLock } from "@/store/slices/bookingSlice";
 import { formatCountdown } from "@/utils/format";
+import { useAppStore, expireSeatLock } from "@/state/useAppStore";
 
 /**
  * Single effect-scoped interval that counts the 5-minute seat hold down.
  * On expiry the selection is cleared and an expiry notice is shown.
  */
 export function SeatLockTimer() {
-  const dispatch = useAppDispatch();
-  const lockExpiresAt = useAppSelector((state) => state.booking.lockExpiresAt);
+  const lockExpiresAt = useAppStore((state) => state.booking.lockExpiresAt);
   const [secondsLeft, setSecondsLeft] = useState(0);
 
   useEffect(() => {
@@ -21,12 +19,12 @@ export function SeatLockTimer() {
     function tick() {
       const remaining = Math.max(0, Math.round((lockExpiresAt! - Date.now()) / 1000));
       setSecondsLeft(remaining);
-      if (remaining === 0) dispatch(expireSeatLock());
+      if (remaining === 0) expireSeatLock();
     }
     tick();
     const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
-  }, [lockExpiresAt, dispatch]);
+  }, [lockExpiresAt]);
 
   if (!lockExpiresAt) return null;
 

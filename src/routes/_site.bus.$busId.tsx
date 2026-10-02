@@ -9,11 +9,10 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getScheduleById } from "@/services/busService";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { selectSchedule, setBoardingPoint, setDroppingPoint } from "@/store/slices/bookingSlice";
 import type { Schedule } from "@/types";
 import { busTypeLabel, formatCurrency, formatLongDate } from "@/utils/format";
 import { toast } from "sonner";
+import { useAppStore, selectSchedule, setBoardingPoint, setDroppingPoint } from "@/state/useAppStore";
 
 export const Route = createFileRoute("/_site/bus/$busId")({
   head: () => ({
@@ -38,9 +37,8 @@ export const Route = createFileRoute("/_site/bus/$busId")({
 function BusDetailsPage() {
   const { busId } = Route.useParams();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const journeyDate = useAppSelector((state) => state.search.journeyDate);
-  const { boardingPoint, droppingPoint } = useAppSelector((state) => state.booking);
+  const journeyDate = useAppStore((state) => state.search.journeyDate);
+  const { boardingPoint, droppingPoint } = useAppStore((state) => state.booking);
 
   const [schedule, setSchedule] = useState<Schedule | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,13 +51,13 @@ function BusDetailsPage() {
       const result = await getScheduleById(Number(busId));
       const withDate = { ...result, journeyDate };
       setSchedule(withDate);
-      dispatch(selectSchedule(withDate));
+      selectSchedule(withDate);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not load this bus.");
     } finally {
       setLoading(false);
     }
-  }, [busId, journeyDate, dispatch]);
+  }, [busId, journeyDate]);
 
   useEffect(() => {
     void load();
@@ -143,7 +141,7 @@ function BusDetailsPage() {
                 value={boardingPoint?.id ?? ""}
                 onValueChange={(value) => {
                   const point = schedule.boardingPoints.find((p) => p.id === value);
-                  if (point) dispatch(setBoardingPoint(point));
+                  if (point) setBoardingPoint(point);
                 }}
                 className="gap-3"
               >
@@ -173,7 +171,7 @@ function BusDetailsPage() {
                 value={droppingPoint?.id ?? ""}
                 onValueChange={(value) => {
                   const point = schedule.droppingPoints.find((p) => p.id === value);
-                  if (point) dispatch(setDroppingPoint(point));
+                  if (point) setDroppingPoint(point);
                 }}
                 className="gap-3"
               >

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Ticket } from "lucide-react";
 import {
+import { useAppStore } from "@/state/useAppStore";
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -18,7 +19,6 @@ import { EmptyState, ErrorState, LoadingSkeleton } from "@/components/common/Sta
 import { RequireAuth } from "@/components/common/RequireAuth";
 import { StatusBadge, bookingStatusTone } from "@/components/common/StatusBadge";
 import { cancelBooking, getMyBookings } from "@/services/bookingService";
-import { useAppSelector } from "@/store/hooks";
 import type { Booking, BookingStatus } from "@/types";
 import { formatCurrency, formatLongDate } from "@/utils/format";
 import { toast } from "sonner";
@@ -52,7 +52,7 @@ const tabs: { value: BookingStatus; label: string }[] = [
 
 function MyBookingsPage() {
   const navigate = useNavigate();
-  const user = useAppSelector((state) => state.auth.user);
+  const user = useAppStore((state) => state.auth.user);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

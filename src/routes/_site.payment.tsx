@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+import { useAppStore, setConfirmedBooking } from "@/state/useAppStore";
   Select,
   SelectContent,
   SelectItem,
@@ -19,8 +20,6 @@ import {
 } from "@/components/ui/select";
 import { createBooking, generateBookingId } from "@/services/bookingService";
 import { makePayment } from "@/services/paymentService";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setConfirmedBooking } from "@/store/slices/bookingSlice";
 import type { Booking, PaymentMethod } from "@/types";
 import { formatCurrency } from "@/utils/format";
 
@@ -49,10 +48,9 @@ const BANKS = ["HDFC Bank", "ICICI Bank", "State Bank of India", "Axis Bank", "K
 
 function PaymentPage() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.auth.user);
+  const user = useAppStore((state) => state.auth.user);
   const { selectedSchedule, selectedSeats, passengers, fare, boardingPoint, droppingPoint } =
-    useAppSelector((state) => state.booking);
+    useAppStore((state) => state.booking);
 
   const [method, setMethod] = useState<PaymentMethod>("UPI");
   const [upiId, setUpiId] = useState("");
@@ -108,7 +106,7 @@ function PaymentPage() {
         bookedAt: new Date().toISOString(),
       };
       await createBooking(booking);
-      dispatch(setConfirmedBooking(booking));
+      setConfirmedBooking(booking);
       navigate({ to: "/booking/confirmation" });
     } catch (err) {
       setFailure(err instanceof Error ? err.message : "Payment failed. Please try again.");

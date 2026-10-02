@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Lock, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoadingSkeleton } from "@/components/common/StateBlocks";
-import { useAppSelector } from "@/store/hooks";
+import { useAppStore } from "@/state/useAppStore";
 
 /**
  * Client-side route guard. Auth lives in localStorage, so we wait for
@@ -16,7 +16,7 @@ export function RequireAuth({
   children: ReactNode;
   adminOnly?: boolean;
 }) {
-  const { isAuthenticated, hydrated, user } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, hydrated, user } = useAppStore((state) => state.auth);
 
   if (!hydrated) {
     return (

@@ -8,11 +8,10 @@ import { FareSummary } from "@/components/booking/FareSummary";
 import { EmptyState, ErrorState, LoadingSkeleton } from "@/components/common/StateBlocks";
 import { Button } from "@/components/ui/button";
 import { getSeats } from "@/services/busService";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { clearLockExpiredNotice, toggleSeat } from "@/store/slices/bookingSlice";
 import type { Seat } from "@/types";
 import { formatLongDate } from "@/utils/format";
 import { toast } from "sonner";
+import { useAppStore, clearLockExpiredNotice, toggleSeat } from "@/state/useAppStore";
 
 export const Route = createFileRoute("/_site/booking/seat-selection")({
   head: () => ({
@@ -35,9 +34,8 @@ const MAX_SEATS = 6;
 
 function SeatSelectionPage() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const { selectedSchedule, selectedSeats, fare, lockExpired, boardingPoint, droppingPoint } =
-    useAppSelector((state) => state.booking);
+    useAppStore((state) => state.booking);
 
   const [seats, setSeats] = useState<Seat[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,7 +67,7 @@ function SeatSelectionPage() {
       toast.error(`You can book up to ${MAX_SEATS} seats in one booking.`);
       return;
     }
-    dispatch(toggleSeat(seat));
+    toggleSeat(seat);
   }
 
   if (!selectedSchedule) {
@@ -115,7 +113,7 @@ function SeatSelectionPage() {
             Your 5 minute seat hold expired, so the selection was released. Please pick your seats
             again.
           </span>
-          <Button size="sm" variant="outline" onClick={() => dispatch(clearLockExpiredNotice())}>
+          <Button size="sm" variant="outline" onClick={() => clearLockExpiredNotice()}>
             Dismiss
           </Button>
         </div>

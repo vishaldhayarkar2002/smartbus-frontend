@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import {
+import { useAppStore } from "@/state/useAppStore";
   Select,
   SelectContent,
   SelectItem,
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { searchBuses } from "@/services/busService";
-import { useAppSelector } from "@/store/hooks";
 import type { Schedule, SortOption } from "@/types";
 import {
   TIME_SLOTS,
@@ -52,7 +52,7 @@ export const Route = createFileRoute("/_site/search")({
 const MAX_PRICE = 2500;
 
 function SearchPage() {
-  const search = useAppSelector((state) => state.search);
+  const search = useAppStore((state) => state.search);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
