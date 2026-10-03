@@ -16,7 +16,10 @@ export const Route = createFileRoute("/_site/help")({
         content: "Answers about SmartBus bookings, seat holds, cancellations and refunds.",
       },
       { property: "og:title", content: "Help & support — SmartBus" },
-      { property: "og:description", content: "Booking, cancellation and refund questions answered." },
+      {
+        property: "og:description",
+        content: "Booking, cancellation and refund questions answered.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

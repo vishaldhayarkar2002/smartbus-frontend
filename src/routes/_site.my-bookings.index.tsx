@@ -132,7 +132,9 @@ function MyBookingsPage() {
                             Booking ID {booking.bookingId}
                           </p>
                         </div>
-                        <p className="text-lg font-extrabold">{formatCurrency(booking.fare.total)}</p>
+                        <p className="text-lg font-extrabold">
+                          {formatCurrency(booking.fare.total)}
+                        </p>
                       </div>
 
                       <div className="mt-4 flex flex-wrap gap-2">

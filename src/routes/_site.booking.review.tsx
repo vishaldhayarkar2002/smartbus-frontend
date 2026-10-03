@@ -18,7 +18,10 @@ export const Route = createFileRoute("/_site/booking/review")({
         content: "Check journey, passengers and the full fare breakdown before paying.",
       },
       { property: "og:title", content: "Review your booking — SmartBus" },
-      { property: "og:description", content: "Journey, passengers and fare breakdown in one view." },
+      {
+        property: "og:description",
+        content: "Journey, passengers and fare breakdown in one view.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -70,13 +73,13 @@ function ReviewPage() {
               {formatLongDate(selectedSchedule.journeyDate)}
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Departs {selectedSchedule.departureTime} • Arrives {selectedSchedule.arrivalTime} • Duration{" "}
-              {selectedSchedule.duration}
+              Departs {selectedSchedule.departureTime} • Arrives {selectedSchedule.arrivalTime} •
+              Duration {selectedSchedule.duration}
             </p>
             {boardingPoint && droppingPoint ? (
               <p className="mt-1 text-sm text-muted-foreground">
-                Boarding {boardingPoint.name} ({boardingPoint.time}) • Dropping {droppingPoint.name} (
-                {droppingPoint.time})
+                Boarding {boardingPoint.name} ({boardingPoint.time}) • Dropping {droppingPoint.name}{" "}
+                ({droppingPoint.time})
               </p>
             ) : null}
           </section>
@@ -94,7 +97,10 @@ function ReviewPage() {
             </div>
             <ul className="mt-3 divide-y divide-border">
               {passengers.map((passenger) => (
-                <li key={passenger.seatId} className="flex items-center justify-between gap-3 py-2 text-sm">
+                <li
+                  key={passenger.seatId}
+                  className="flex items-center justify-between gap-3 py-2 text-sm"
+                >
                   <span>
                     <span className="font-semibold">{passenger.name}</span>
                     <span className="text-muted-foreground">

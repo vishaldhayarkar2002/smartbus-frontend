@@ -9,7 +9,16 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { z } from "zod";
 import { STORAGE_KEYS } from "@/config/env";
 import { calculateFare } from "@/utils/fare";
-import type { AuthResponse, Booking, FareBreakdown, Passenger, Schedule, Seat, StopPoint, User } from "@/types";
+import type {
+  AuthResponse,
+  Booking,
+  FareBreakdown,
+  Passenger,
+  Schedule,
+  Seat,
+  StopPoint,
+  User,
+} from "@/types";
 import { DEFAULT_JOURNEY_DATE } from "@/data/mockData";
 
 interface AuthState {
@@ -54,7 +63,10 @@ const persistedSchema = z.object({
   auth: z
     .object({
       token: z.string().nullable(),
-      user: z.object({ id: z.number(), email: z.string(), role: z.enum(["USER", "ADMIN"]) }).passthrough().nullable(),
+      user: z
+        .object({ id: z.number(), email: z.string(), role: z.enum(["USER", "ADMIN"]) })
+        .passthrough()
+        .nullable(),
     })
     .nullable(),
   booking: z
@@ -85,17 +97,31 @@ export const useAppStore = create<AppState>()(
         const parsed = persistedSchema.safeParse(persisted);
         if (!parsed.success) return { ...current, auth: { ...current.auth, hydrated: true } };
         const { auth, booking } = parsed.data;
-        const session = auth?.token && auth.user ? { token: auth.token, user: auth.user as unknown as User } : null;
+        const session =
+          auth?.token && auth.user
+            ? { token: auth.token, user: auth.user as unknown as User }
+            : null;
         let draft = { ...emptyBooking, ...(booking as unknown as BookingState) };
         // An expired seat hold cannot be resumed after reload.
         if (draft.lockExpiresAt && draft.lockExpiresAt < Date.now()) {
-          draft = { ...draft, selectedSeats: [], passengers: [], lockExpiresAt: null, lockExpired: true };
+          draft = {
+            ...draft,
+            selectedSeats: [],
+            passengers: [],
+            lockExpiresAt: null,
+            lockExpired: true,
+          };
           draft.fare = calculateFare([]);
         }
         return {
           ...current,
           booking: draft,
-          auth: { user: session?.user ?? null, token: session?.token ?? null, isAuthenticated: !!session, hydrated: true },
+          auth: {
+            user: session?.user ?? null,
+            token: session?.token ?? null,
+            isAuthenticated: !!session,
+            hydrated: true,
+          },
         };
       },
       onRehydrateStorage: () => () => {
@@ -107,7 +133,8 @@ export const useAppStore = create<AppState>()(
 
 const set = useAppStore.setState;
 const get = useAppStore.getState;
-const patchBooking = (patch: Partial<BookingState>) => set((s) => ({ booking: { ...s.booking, ...patch } }));
+const patchBooking = (patch: Partial<BookingState>) =>
+  set((s) => ({ booking: { ...s.booking, ...patch } }));
 
 export function setCredentials({ token, user }: AuthResponse) {
   set((s) => ({ auth: { ...s.auth, token, user, isAuthenticated: true } }));
@@ -116,7 +143,10 @@ export function updateUser(user: User) {
   set((s) => ({ auth: { ...s.auth, user } }));
 }
 export function logout() {
-  set((s) => ({ auth: { ...s.auth, token: null, user: null, isAuthenticated: false }, booking: emptyBooking }));
+  set((s) => ({
+    auth: { ...s.auth, token: null, user: null, isAuthenticated: false },
+    booking: emptyBooking,
+  }));
 }
 export function setSearch(search: AppState["search"]) {
   set({ search });
@@ -147,14 +177,30 @@ export function toggleSeat(seat: Seat) {
       },
   );
   const lockExpiresAt =
-    selectedSeats.length === 0 ? null : b.lockExpiresAt && !b.lockExpired ? b.lockExpiresAt : Date.now() + 300_000;
-  patchBooking({ selectedSeats, passengers, lockExpiresAt, lockExpired: false, fare: calculateFare(selectedSeats) });
+    selectedSeats.length === 0
+      ? null
+      : b.lockExpiresAt && !b.lockExpired
+        ? b.lockExpiresAt
+        : Date.now() + 300_000;
+  patchBooking({
+    selectedSeats,
+    passengers,
+    lockExpiresAt,
+    lockExpired: false,
+    fare: calculateFare(selectedSeats),
+  });
 }
 export function setPassengers(passengers: Passenger[]) {
   patchBooking({ passengers });
 }
 export function expireSeatLock() {
-  patchBooking({ selectedSeats: [], passengers: [], lockExpiresAt: null, lockExpired: true, fare: calculateFare([]) });
+  patchBooking({
+    selectedSeats: [],
+    passengers: [],
+    lockExpiresAt: null,
+    lockExpired: true,
+    fare: calculateFare([]),
+  });
 }
 export function clearLockExpiredNotice() {
   patchBooking({ lockExpired: false });

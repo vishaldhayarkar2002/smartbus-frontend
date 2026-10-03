@@ -114,7 +114,10 @@ export function Header() {
       </div>
 
       <div className={cn("border-t border-border md:hidden", mobileOpen ? "block" : "hidden")}>
-        <nav aria-label="Mobile navigation" className="mx-auto grid w-full max-w-7xl gap-1 px-4 py-3">
+        <nav
+          aria-label="Mobile navigation"
+          className="mx-auto grid w-full max-w-7xl gap-1 px-4 py-3"
+        >
           {navItems.map((item) => (
             <Link
               key={item.to}

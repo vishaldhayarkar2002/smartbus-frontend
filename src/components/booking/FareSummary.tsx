@@ -6,7 +6,8 @@ export function FareSummary({ fare, seatCount }: { fare: FareBreakdown; seatCoun
     <dl className="space-y-2 text-sm">
       <div className="flex items-center justify-between">
         <dt className="text-muted-foreground">
-          Base fare{typeof seatCount === "number" ? ` (${seatCount} seat${seatCount === 1 ? "" : "s"})` : ""}
+          Base fare
+          {typeof seatCount === "number" ? ` (${seatCount} seat${seatCount === 1 ? "" : "s"})` : ""}
         </dt>
         <dd className="font-medium">{formatCurrency(fare.baseFare)}</dd>
       </div>

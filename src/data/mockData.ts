@@ -2,16 +2,7 @@
  * Centralised mock data. Nothing else in the app should hardcode datasets.
  * Every export here mirrors a future Spring Boot response payload.
  */
-import type {
-  Booking,
-  Bus,
-  BusRoute,
-  Schedule,
-  Seat,
-  SeatType,
-  StopPoint,
-  User,
-} from "@/types";
+import type { Booking, Bus, BusRoute, Schedule, Seat, SeatType, StopPoint, User } from "@/types";
 
 export const DEMO_CREDENTIALS = {
   user: { email: "traveller@smartbus.in", password: "user123" },

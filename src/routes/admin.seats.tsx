@@ -151,10 +151,7 @@ function AdminSeats() {
           ) : seatsError ? (
             <ErrorState message={seatsError} onRetry={() => void loadSeats(selectedId)} />
           ) : seats.length === 0 ? (
-            <EmptyState
-              title="No seats configured"
-              description="This bus has no seat data yet."
-            />
+            <EmptyState title="No seats configured" description="This bus has no seat data yet." />
           ) : (
             <>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

@@ -13,7 +13,10 @@ export const Route = createFileRoute("/admin/")({
   head: () => ({
     meta: [
       { title: "Admin dashboard — SmartBus" },
-      { name: "description", content: "SmartBus operations overview: users, buses, bookings, revenue." },
+      {
+        name: "description",
+        content: "SmartBus operations overview: users, buses, bookings, revenue.",
+      },
       { property: "og:title", content: "Admin dashboard — SmartBus" },
       { property: "og:description", content: "Key SmartBus operating numbers at a glance." },
       { property: "og:type", content: "website" },
@@ -33,7 +36,11 @@ function AdminDashboard() {
     setLoading(true);
     setError(null);
     try {
-      const [users, buses, bookings] = await Promise.all([listUsers(), listBuses(), getAllBookings()]);
+      const [users, buses, bookings] = await Promise.all([
+        listUsers(),
+        listBuses(),
+        getAllBookings(),
+      ]);
       const today = "2026-09-25";
       setStats({
         users: users.length,
@@ -43,9 +50,7 @@ function AdminDashboard() {
           .filter((b) => b.journeyDate === today && b.status !== "CANCELLED")
           .reduce((sum, b) => sum + b.fare.total, 0),
       });
-      setRecent(
-        [...bookings].sort((a, b) => b.bookedAt.localeCompare(a.bookedAt)).slice(0, 5),
-      );
+      setRecent([...bookings].sort((a, b) => b.bookedAt.localeCompare(a.bookedAt)).slice(0, 5));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not load the dashboard.");
     } finally {
@@ -89,16 +94,33 @@ function AdminDashboard() {
 
           <section className="surface-card p-5">
             <h2 className="font-bold">Recent bookings</h2>
-            <div className="mt-3 overflow-x-auto" tabIndex={0} role="region" aria-label="Recent bookings table">
+            <div
+              className="mt-3 overflow-x-auto"
+              tabIndex={0}
+              role="region"
+              aria-label="Recent bookings table"
+            >
               <table className="w-full min-w-[640px] text-sm">
                 <thead>
                   <tr className="border-b border-border text-left text-xs uppercase text-muted-foreground">
-                    <th scope="col" className="py-2">Booking ID</th>
-                    <th scope="col" className="py-2">Customer</th>
-                    <th scope="col" className="py-2">Route</th>
-                    <th scope="col" className="py-2">Journey</th>
-                    <th scope="col" className="py-2">Amount</th>
-                    <th scope="col" className="py-2">Status</th>
+                    <th scope="col" className="py-2">
+                      Booking ID
+                    </th>
+                    <th scope="col" className="py-2">
+                      Customer
+                    </th>
+                    <th scope="col" className="py-2">
+                      Route
+                    </th>
+                    <th scope="col" className="py-2">
+                      Journey
+                    </th>
+                    <th scope="col" className="py-2">
+                      Amount
+                    </th>
+                    <th scope="col" className="py-2">
+                      Status
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

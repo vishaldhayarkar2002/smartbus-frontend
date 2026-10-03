@@ -19,7 +19,8 @@ export const Route = createFileRoute("/_site/booking/seat-selection")({
       { title: "Choose your seats — SmartBus" },
       {
         name: "description",
-        content: "Pick seats or berths on the live bus layout. Selected seats are held for 5 minutes.",
+        content:
+          "Pick seats or berths on the live bus layout. Selected seats are held for 5 minutes.",
       },
       { property: "og:title", content: "Choose your seats — SmartBus" },
       { property: "og:description", content: "Interactive seat map with a 5 minute seat hold." },
@@ -154,7 +155,9 @@ function SeatSelectionPage() {
             </ul>
           )}
 
-          {selectedSeats.length > 0 ? <FareSummary fare={fare} seatCount={selectedSeats.length} /> : null}
+          {selectedSeats.length > 0 ? (
+            <FareSummary fare={fare} seatCount={selectedSeats.length} />
+          ) : null}
 
           <Button
             className="w-full"

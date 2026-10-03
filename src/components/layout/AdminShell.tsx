@@ -42,7 +42,10 @@ export function AdminShell({
             Admin
           </span>
         </div>
-        <nav aria-label="Admin navigation" className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col">
+        <nav
+          aria-label="Admin navigation"
+          className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col"
+        >
           {links.map((link) => {
             const Icon = link.icon;
             return (
@@ -50,7 +53,10 @@ export function AdminShell({
                 key={link.to}
                 to={link.to}
                 activeOptions={{ exact: link.exact }}
-                activeProps={{ className: "bg-primary text-primary-foreground", "aria-current": "page" }}
+                activeProps={{
+                  className: "bg-primary text-primary-foreground",
+                  "aria-current": "page",
+                }}
                 className={cn(
                   "flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
                 )}
@@ -63,7 +69,11 @@ export function AdminShell({
         </nav>
       </aside>
 
-      <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 px-4 py-6 focus:outline-none lg:px-8">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="min-w-0 flex-1 px-4 py-6 focus:outline-none lg:px-8"
+      >
         <header className="mb-6">
           <h1 className="text-2xl font-extrabold tracking-tight">{title}</h1>
           {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}

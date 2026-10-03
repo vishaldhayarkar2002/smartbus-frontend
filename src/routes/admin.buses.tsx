@@ -30,7 +30,10 @@ export const Route = createFileRoute("/admin/buses")({
   head: () => ({
     meta: [
       { title: "Manage buses — SmartBus admin" },
-      { name: "description", content: "Add, edit, activate and remove buses in the SmartBus fleet." },
+      {
+        name: "description",
+        content: "Add, edit, activate and remove buses in the SmartBus fleet.",
+      },
       { property: "og:title", content: "Manage buses — SmartBus admin" },
       { property: "og:description", content: "Fleet management for SmartBus operators." },
       { property: "og:type", content: "website" },
@@ -95,17 +98,36 @@ function AdminBuses() {
       ) : error ? (
         <ErrorState message={error} onRetry={() => void load()} />
       ) : (
-        <div className="surface-card overflow-x-auto p-5" tabIndex={0} role="region" aria-label="Scrollable data table">
+        <div
+          className="surface-card overflow-x-auto p-5"
+          tabIndex={0}
+          role="region"
+          aria-label="Scrollable data table"
+        >
           <table className="w-full min-w-[720px] text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs uppercase text-muted-foreground">
-                <th scope="col" className="py-2">Bus</th>
-                <th scope="col" className="py-2">Operator</th>
-                <th scope="col" className="py-2">Number</th>
-                <th scope="col" className="py-2">Type</th>
-                <th scope="col" className="py-2">Seats</th>
-                <th scope="col" className="py-2">Status</th>
-                <th scope="col" className="py-2 text-right">Actions</th>
+                <th scope="col" className="py-2">
+                  Bus
+                </th>
+                <th scope="col" className="py-2">
+                  Operator
+                </th>
+                <th scope="col" className="py-2">
+                  Number
+                </th>
+                <th scope="col" className="py-2">
+                  Type
+                </th>
+                <th scope="col" className="py-2">
+                  Seats
+                </th>
+                <th scope="col" className="py-2">
+                  Status
+                </th>
+                <th scope="col" className="py-2 text-right">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>

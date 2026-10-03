@@ -15,7 +15,10 @@ export const Route = createFileRoute("/_site/access-denied")({
       { title: "Access denied | SmartBus" },
       { name: "description", content: "You don't have permission to view this SmartBus page." },
       { property: "og:title", content: "Access denied | SmartBus" },
-      { property: "og:description", content: "You don't have permission to view this SmartBus page." },
+      {
+        property: "og:description",
+        content: "You don't have permission to view this SmartBus page.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },

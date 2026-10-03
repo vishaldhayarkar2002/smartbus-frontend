@@ -30,7 +30,10 @@ export const Route = createFileRoute("/_site/my-bookings/$bookingId")({
 
 function BookingDetailPage() {
   const { bookingId } = Route.useParams();
-  const query = useQuery({ queryKey: ["bookings", bookingId], queryFn: () => getBookingById(bookingId) });
+  const query = useQuery({
+    queryKey: ["bookings", bookingId],
+    queryFn: () => getBookingById(bookingId),
+  });
   const booking = query.data ?? null;
   const loading = query.isPending;
   const error = query.error ? query.error.message || "Could not load this booking." : null;
@@ -79,7 +82,8 @@ function BookingDetailPage() {
         </p>
         <p className="mt-1 text-sm text-muted-foreground">
           {formatLongDate(booking.journeyDate)} • departs {booking.departureTime} from{" "}
-          {booking.boardingPoint.name} • arrives {booking.arrivalTime} at {booking.droppingPoint.name}
+          {booking.boardingPoint.name} • arrives {booking.arrivalTime} at{" "}
+          {booking.droppingPoint.name}
         </p>
       </section>
 

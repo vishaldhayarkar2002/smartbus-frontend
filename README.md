@@ -17,10 +17,10 @@ The app runs at `http://localhost:8080`.
 
 ### Demo credentials (also shown on the sign-in screen)
 
-| Role      | Email                    | Password   |
-| --------- | ------------------------ | ---------- |
-| Traveller | traveller@smartbus.in    | `user123`  |
-| Admin     | admin@smartbus.in        | `admin123` |
+| Role      | Email                 | Password   |
+| --------- | --------------------- | ---------- |
+| Traveller | traveller@smartbus.in | `user123`  |
+| Admin     | admin@smartbus.in     | `admin123` |
 
 Signing in as the traveller lands on **My bookings**; the admin lands on the **admin dashboard**.
 
@@ -38,16 +38,16 @@ No backend URL is hardcoded anywhere else in the codebase. Everything reads `src
 
 ## 2. Technology stack
 
-| Concern           | Choice                                            |
-| ----------------- | ------------------------------------------------- |
-| UI library        | React 19 + TypeScript                             |
-| Build tool        | Vite 7                                            |
-| Routing           | TanStack Router (file-based)                       |
-| State management  | Redux Toolkit + react-redux                        |
-| HTTP client       | Axios (single configured instance)                 |
-| Styling           | Tailwind CSS v4 + shadcn/ui components             |
-| Icons             | lucide-react                                       |
-| Notifications     | sonner toasts                                      |
+| Concern          | Choice                                 |
+| ---------------- | -------------------------------------- |
+| UI library       | React 19 + TypeScript                  |
+| Build tool       | Vite 7                                 |
+| Routing          | TanStack Router (file-based)           |
+| State management | Redux Toolkit + react-redux            |
+| HTTP client      | Axios (single configured instance)     |
+| Styling          | Tailwind CSS v4 + shadcn/ui components |
+| Icons            | lucide-react                           |
+| Notifications    | sonner toasts                          |
 
 > **Note for the viva:** the original specification mentioned React Router. This project is built on **TanStack Router** instead, because the Lovable platform fixes the routing library. The concepts are identical — file-based route definitions, nested layouts, route params, and programmatic navigation. Every URL in the specification exists exactly as written.
 
@@ -57,36 +57,36 @@ No backend URL is hardcoded anywhere else in the codebase. Everything reads `src
 
 ### Traveller side
 
-| Page                            | Route                            | What it does                                                                 |
-| ------------------------------- | -------------------------------- | ---------------------------------------------------------------------------- |
-| Home                            | `/`                              | Hero, search card (from / to / date + swap), popular routes, offers, benefits |
-| Sign in                         | `/login`                         | Validated form, demo credential quick-fill, role-based redirect              |
-| Register                        | `/register`                      | Full name, email, 10-digit mobile, password + confirm                        |
-| Forgot password                 | `/forgot-password`               | Mock reset-link request                                                      |
-| Search results                  | `/search`                        | Filters (departure / arrival slot, max price, AC, Non-AC, sleeper, seater, operator) + 5 sort modes |
-| Bus details                     | `/bus/$busId`                    | Amenities, boarding & dropping point tabs (both required), cancellation policy |
-| Seat selection                  | `/booking/seat-selection`        | Top-view seat map, max 6 seats, 5-minute hold countdown                      |
-| Passenger details               | `/booking/passenger-details`     | One validated form per selected seat                                         |
-| Review                          | `/booking/review`                | Journey summary, passengers, fare breakdown, edit links                      |
-| Payment                         | `/payment`                       | UPI / Card / Net banking, processing state, success or failure screen        |
-| Confirmation                    | `/booking/confirmation`          | Booking ID and next actions                                                  |
-| E-ticket                        | `/ticket/$bookingId`             | Printable ticket with QR placeholder                                         |
-| My bookings                     | `/my-bookings`                   | Upcoming / Completed / Cancelled tabs, cancellation with confirm dialog      |
-| Booking detail                  | `/my-bookings/$bookingId`        | Full booking record                                                          |
-| Profile                         | `/profile`                       | Update name / mobile, change password                                        |
-| Help                            | `/help`                          | FAQ accordion and support contacts                                           |
+| Page              | Route                        | What it does                                                                                        |
+| ----------------- | ---------------------------- | --------------------------------------------------------------------------------------------------- |
+| Home              | `/`                          | Hero, search card (from / to / date + swap), popular routes, offers, benefits                       |
+| Sign in           | `/login`                     | Validated form, demo credential quick-fill, role-based redirect                                     |
+| Register          | `/register`                  | Full name, email, 10-digit mobile, password + confirm                                               |
+| Forgot password   | `/forgot-password`           | Mock reset-link request                                                                             |
+| Search results    | `/search`                    | Filters (departure / arrival slot, max price, AC, Non-AC, sleeper, seater, operator) + 5 sort modes |
+| Bus details       | `/bus/$busId`                | Amenities, boarding & dropping point tabs (both required), cancellation policy                      |
+| Seat selection    | `/booking/seat-selection`    | Top-view seat map, max 6 seats, 5-minute hold countdown                                             |
+| Passenger details | `/booking/passenger-details` | One validated form per selected seat                                                                |
+| Review            | `/booking/review`            | Journey summary, passengers, fare breakdown, edit links                                             |
+| Payment           | `/payment`                   | UPI / Card / Net banking, processing state, success or failure screen                               |
+| Confirmation      | `/booking/confirmation`      | Booking ID and next actions                                                                         |
+| E-ticket          | `/ticket/$bookingId`         | Printable ticket with QR placeholder                                                                |
+| My bookings       | `/my-bookings`               | Upcoming / Completed / Cancelled tabs, cancellation with confirm dialog                             |
+| Booking detail    | `/my-bookings/$bookingId`    | Full booking record                                                                                 |
+| Profile           | `/profile`                   | Update name / mobile, change password                                                               |
+| Help              | `/help`                      | FAQ accordion and support contacts                                                                  |
 
 ### Admin side (own sidebar layout, admin-only guard)
 
-| Page         | Route              | What it does                                                            |
-| ------------ | ------------------ | ----------------------------------------------------------------------- |
+| Page         | Route              | What it does                                                                  |
+| ------------ | ------------------ | ----------------------------------------------------------------------------- |
 | Dashboard    | `/admin`           | Total users, active buses, today's bookings, today's revenue, recent bookings |
-| Buses        | `/admin/buses`     | Add / edit / delete / activate buses; type drives layout and seat count |
-| Routes       | `/admin/routes`    | Add / edit / delete city pairs with distance and duration               |
-| Schedules    | `/admin/schedules` | Add / edit / delete schedules: route, bus, date, times, fare, status    |
-| Seat layouts | `/admin/seats`     | Visual seat-map inspector per schedule, reusing the traveller seat map  |
-| Bookings     | `/admin/bookings`  | Search, filter by status, sort, view booking detail                     |
-| Users        | `/admin/users`     | Search, filter by role/status, activate / deactivate, view user detail  |
+| Buses        | `/admin/buses`     | Add / edit / delete / activate buses; type drives layout and seat count       |
+| Routes       | `/admin/routes`    | Add / edit / delete city pairs with distance and duration                     |
+| Schedules    | `/admin/schedules` | Add / edit / delete schedules: route, bus, date, times, fare, status          |
+| Seat layouts | `/admin/seats`     | Visual seat-map inspector per schedule, reusing the traveller seat map        |
+| Bookings     | `/admin/bookings`  | Search, filter by status, sort, view booking detail                           |
+| Users        | `/admin/users`     | Search, filter by role/status, activate / deactivate, view user detail        |
 
 ### Cross-cutting behaviour
 
@@ -143,10 +143,10 @@ Path alias: `@/` → `src/`.
 
 ## 6. State management
 
-| Slice     | Holds                                                     | Persisted           |
-| --------- | --------------------------------------------------------- | ------------------- |
-| `auth`    | `user`, `token`, `isAuthenticated`, `hydrated`             | `localStorage`      |
-| `search`  | `from`, `to`, `journeyDate`                               | in memory           |
+| Slice     | Holds                                                                         | Persisted      |
+| --------- | ----------------------------------------------------------------------------- | -------------- |
+| `auth`    | `user`, `token`, `isAuthenticated`, `hydrated`                                | `localStorage` |
+| `search`  | `from`, `to`, `journeyDate`                                                   | in memory      |
 | `booking` | schedule, boarding/dropping point, seats, passengers, fare, confirmed booking | `localStorage` |
 
 Purely visual state (open dialogs, active tab, filter panel) stays in local component state — deliberately, to avoid over-engineering.
@@ -176,6 +176,7 @@ VITE_API_BASE_URL=http://localhost:8080/api
 ```
 
 `src/services/api.ts` already provides:
+
 - a single Axios instance with that `baseURL`,
 - a **request interceptor** attaching `Authorization: Bearer <token>` from stored auth,
 - a **response interceptor** flattening Spring Boot error bodies into a plain `Error(message)` the UI shows in its error state.
@@ -206,35 +207,35 @@ Nothing else changes — the return type is identical, so pages, filters and Red
 
 **`authService.ts`**
 
-| Function                 | Spring Boot endpoint                | Method |
-| ------------------------ | ----------------------------------- | ------ |
-| `login`                  | `/auth/login`                       | POST   |
-| `register`               | `/auth/register`                    | POST   |
-| `requestPasswordReset`   | `/auth/forgot-password`             | POST   |
-| `changePassword`         | `/users/me/password`                | PUT    |
-| `updateProfile`          | `/users/me`                         | PUT    |
+| Function               | Spring Boot endpoint    | Method |
+| ---------------------- | ----------------------- | ------ |
+| `login`                | `/auth/login`           | POST   |
+| `register`             | `/auth/register`        | POST   |
+| `requestPasswordReset` | `/auth/forgot-password` | POST   |
+| `changePassword`       | `/users/me/password`    | PUT    |
+| `updateProfile`        | `/users/me`             | PUT    |
 
 **`busService.ts`**
 
-| Function          | Spring Boot endpoint              | Method |
-| ----------------- | --------------------------------- | ------ |
-| `searchBuses`     | `/buses/search?from=&to=&journeyDate=` | GET |
-| `getScheduleById` | `/buses/{id}`                     | GET    |
-| `getSeats`        | `/schedules/{id}/seats`           | GET    |
-| `lockSeat`        | `/seats/{seatId}/lock`            | POST   |
-| `releaseSeat`     | `/seats/{seatId}/release`         | POST   |
-| `getRoutes`       | `/routes`                         | GET    |
-| `getSchedules`    | `/schedules`                      | GET    |
+| Function          | Spring Boot endpoint                   | Method |
+| ----------------- | -------------------------------------- | ------ |
+| `searchBuses`     | `/buses/search?from=&to=&journeyDate=` | GET    |
+| `getScheduleById` | `/buses/{id}`                          | GET    |
+| `getSeats`        | `/schedules/{id}/seats`                | GET    |
+| `lockSeat`        | `/seats/{seatId}/lock`                 | POST   |
+| `releaseSeat`     | `/seats/{seatId}/release`              | POST   |
+| `getRoutes`       | `/routes`                              | GET    |
+| `getSchedules`    | `/schedules`                           | GET    |
 
 **`bookingService.ts`**
 
-| Function         | Spring Boot endpoint              | Method |
-| ---------------- | --------------------------------- | ------ |
-| `createBooking`  | `/bookings`                       | POST   |
-| `getMyBookings`  | `/bookings/my`                    | GET    |
-| `getBookingById` | `/bookings/{bookingId}`           | GET    |
-| `cancelBooking`  | `/bookings/{bookingId}/cancel`    | PUT    |
-| `getAllBookings` | `/admin/bookings`                 | GET    |
+| Function         | Spring Boot endpoint           | Method |
+| ---------------- | ------------------------------ | ------ |
+| `createBooking`  | `/bookings`                    | POST   |
+| `getMyBookings`  | `/bookings/my`                 | GET    |
+| `getBookingById` | `/bookings/{bookingId}`        | GET    |
+| `cancelBooking`  | `/bookings/{bookingId}/cancel` | PUT    |
+| `getAllBookings` | `/admin/bookings`              | GET    |
 
 **`paymentService.ts`**
 
@@ -244,15 +245,15 @@ Nothing else changes — the return type is identical, so pages, filters and Red
 
 **`adminService.ts`**
 
-| Function                                  | Spring Boot endpoint                | Method        |
-| ----------------------------------------- | ----------------------------------- | ------------- |
-| `listBuses` / `saveBus` / `deleteBus`     | `/admin/buses`, `/admin/buses/{id}` | GET/POST-PUT/DELETE |
-| `toggleBusActive`                         | `/admin/buses/{id}/status`          | PATCH         |
-| `listRoutes` / `saveRoute` / `deleteRoute`| `/admin/routes`, `/admin/routes/{id}` | GET/POST-PUT/DELETE |
+| Function                                            | Spring Boot endpoint                        | Method              |
+| --------------------------------------------------- | ------------------------------------------- | ------------------- |
+| `listBuses` / `saveBus` / `deleteBus`               | `/admin/buses`, `/admin/buses/{id}`         | GET/POST-PUT/DELETE |
+| `toggleBusActive`                                   | `/admin/buses/{id}/status`                  | PATCH               |
+| `listRoutes` / `saveRoute` / `deleteRoute`          | `/admin/routes`, `/admin/routes/{id}`       | GET/POST-PUT/DELETE |
 | `listSchedules` / `saveSchedule` / `deleteSchedule` | `/admin/schedules`, `/admin/schedules/{id}` | GET/POST-PUT/DELETE |
-| `toggleScheduleActive`                    | `/admin/schedules/{id}/status`      | PATCH         |
-| `listUsers`                               | `/admin/users`                      | GET           |
-| `toggleUserStatus`                        | `/admin/users/{id}/status`          | PATCH         |
+| `toggleScheduleActive`                              | `/admin/schedules/{id}/status`              | PATCH               |
+| `listUsers`                                         | `/admin/users`                              | GET                 |
+| `toggleUserStatus`                                  | `/admin/users/{id}/status`                  | PATCH               |
 
 ### Step 3 — align the JSON
 

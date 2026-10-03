@@ -28,7 +28,10 @@ export function SeatLegend() {
       {(["AVAILABLE", "SELECTED", "BOOKED", "LOCKED"] as SeatStatus[]).map((status) => (
         <li key={status} className="flex items-center gap-1.5">
           <span
-            className={cn("flex size-5 items-center justify-center rounded border", statusStyles[status])}
+            className={cn(
+              "flex size-5 items-center justify-center rounded border",
+              statusStyles[status],
+            )}
             aria-hidden="true"
           >
             {status === "BOOKED" ? <X className="size-3" /> : null}
@@ -52,7 +55,11 @@ function SeatButton({
   onToggle?: ((seat: Seat) => void) | undefined;
   readOnly?: boolean | undefined;
 }) {
-  const status: SeatStatus = selected ? "SELECTED" : seat.status === "SELECTED" ? "AVAILABLE" : seat.status;
+  const status: SeatStatus = selected
+    ? "SELECTED"
+    : seat.status === "SELECTED"
+      ? "AVAILABLE"
+      : seat.status;
   const disabled = readOnly || status === "BOOKED" || status === "LOCKED";
   const isSleeper = seat.seatType !== "SEATER";
   const Icon = isSleeper ? BedDouble : Armchair;

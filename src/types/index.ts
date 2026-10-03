@@ -169,11 +169,7 @@ export interface BusFilters {
 }
 
 export type SortOption =
-  | "PRICE_LOW"
-  | "PRICE_HIGH"
-  | "EARLIEST_DEPARTURE"
-  | "SHORTEST_DURATION"
-  | "RATING";
+  "PRICE_LOW" | "PRICE_HIGH" | "EARLIEST_DEPARTURE" | "SHORTEST_DURATION" | "RATING";
 
 export interface PaymentRequest {
   bookingReference: string;
