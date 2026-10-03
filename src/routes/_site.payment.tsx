@@ -1,5 +1,5 @@
 import { useAppStore, setConfirmedBooking } from "@/state/useAppStore";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Banknote, CreditCard, Loader2, Lock, Smartphone, XCircle } from "lucide-react";
 import { BookingSteps } from "@/components/booking/BookingSteps";
@@ -58,6 +58,7 @@ function PaymentPage() {
   const [bank, setBank] = useState(BANKS[0]!);
   const [processing, setProcessing] = useState(false);
   const [failure, setFailure] = useState<string | null>(null);
+  const bookingIdRef = useRef<string | null>(null);
 
   if (!selectedSchedule || selectedSeats.length === 0 || passengers.length === 0) {
     return (
@@ -73,9 +74,12 @@ function PaymentPage() {
   }
 
   async function handlePay() {
+    if (processing) return;
     setFailure(null);
     setProcessing(true);
-    const bookingId = generateBookingId(selectedSchedule!.journeyDate);
+    // One booking ID per payment page visit doubles as the idempotency key.
+    bookingIdRef.current ??= generateBookingId(selectedSchedule!.journeyDate);
+    const bookingId = bookingIdRef.current;
     try {
       const payment = await makePayment({ bookingReference: bookingId, amount: fare.total, method });
       if (!payment.success) {
