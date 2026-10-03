@@ -56,7 +56,7 @@ function ProfilePage() {
   async function savePassword(event: React.FormEvent) {
     event.preventDefault();
     try {
-      const result = await changePassword(current, next);
+      const result = await changePassword(current, next, user.email);
       toast.success(result.message);
       setCurrent("");
       setNext("");
