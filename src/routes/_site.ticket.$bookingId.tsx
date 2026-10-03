@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Printer } from "lucide-react";
 import { ErrorState, LoadingSkeleton } from "@/components/common/StateBlocks";
@@ -30,25 +30,11 @@ export const Route = createFileRoute("/_site/ticket/$bookingId")({
 
 function TicketPage() {
   const { bookingId } = Route.useParams();
-  const [booking, setBooking] = useState<Booking | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      setBooking(await getBookingById(bookingId));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load this ticket.");
-    } finally {
-      setLoading(false);
-    }
-  }, [bookingId]);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const query = useQuery({ queryKey: ["bookings", bookingId], queryFn: () => getBookingById(bookingId) });
+  const booking = query.data ?? null;
+  const loading = query.isPending;
+  const error = query.error ? query.error.message || "Could not load this ticket." : null;
+  const load = query.refetch;
 
   if (loading) {
     return (

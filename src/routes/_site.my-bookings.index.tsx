@@ -1,5 +1,5 @@
 import { useAppStore } from "@/state/useAppStore";
-import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Ticket } from "lucide-react";
 import {
@@ -53,32 +53,25 @@ const tabs: { value: BookingStatus; label: string }[] = [
 function MyBookingsPage() {
   const navigate = useNavigate();
   const user = useAppStore((state) => state.auth.user);
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const load = useCallback(async () => {
-    if (!user) return;
-    setLoading(true);
-    setError(null);
-    try {
-      setBookings(await getMyBookings(user.id));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load your bookings.");
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const queryClient = useQueryClient();
+  const query = useQuery({
+    queryKey: ["bookings", "mine", user?.id],
+    queryFn: () => getMyBookings(user!.id),
+    enabled: Boolean(user),
+  });
+  const bookings = query.data ?? [];
+  const loading = query.isPending;
+  const error = query.error ? query.error.message || "Could not load your bookings." : null;
+  const load = query.refetch;
+  const cancel = useMutation({
+    mutationFn: (id: string) => cancelBooking(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["bookings"] }),
+  });
 
   async function handleCancel(booking: Booking) {
     try {
-      await cancelBooking(booking.bookingId);
+      await cancel.mutateAsync(booking.bookingId);
       toast.success(`Booking ${booking.bookingId} cancelled. Refund follows the policy.`);
-      void load();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not cancel this booking.");
     }
