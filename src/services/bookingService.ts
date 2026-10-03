@@ -9,7 +9,16 @@ import type { Booking } from "@/types";
 
 export async function createBooking(booking: Booking): Promise<Booking> {
   // return api.post<Booking>("/bookings", payload).then(r => r.data)
-  writeTable("bookings", [booking, ...readTable("bookings")]);
+  const bookings = readTable("bookings");
+  // Idempotent: the same booking ID is stored once.
+  const existing = bookings.find((b) => b.bookingId === booking.bookingId);
+  if (existing) return mockRequest(existing, 100);
+  // Revalidate the hold: refuse seats sold since they were selected.
+  const sold = getBookedSeatIds(booking.scheduleId, booking.journeyDate);
+  if (booking.seats.some((s) => sold.has(s.seatId))) {
+    return mockFailure("One or more selected seats were just booked by someone else.");
+  }
+  writeTable("bookings", [booking, ...bookings]);
   return mockRequest(booking, 300);
 }
 
