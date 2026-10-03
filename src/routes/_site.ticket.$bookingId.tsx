@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Printer } from "lucide-react";
 import { ErrorState, LoadingSkeleton } from "@/components/common/StateBlocks";
@@ -14,7 +14,10 @@ export const Route = createFileRoute("/_site/ticket/$bookingId")({
   head: () => ({
     meta: [
       { title: "Your e-ticket — SmartBus" },
-      { name: "description", content: "Printable SmartBus e-ticket with QR code and seat details." },
+      {
+        name: "description",
+        content: "Printable SmartBus e-ticket with QR code and seat details.",
+      },
       { property: "og:title", content: "Your e-ticket — SmartBus" },
       { property: "og:description", content: "Show this e-ticket and QR code while boarding." },
       { property: "og:type", content: "website" },
@@ -30,25 +33,14 @@ export const Route = createFileRoute("/_site/ticket/$bookingId")({
 
 function TicketPage() {
   const { bookingId } = Route.useParams();
-  const [booking, setBooking] = useState<Booking | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      setBooking(await getBookingById(bookingId));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load this ticket.");
-    } finally {
-      setLoading(false);
-    }
-  }, [bookingId]);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const query = useQuery({
+    queryKey: ["bookings", bookingId],
+    queryFn: () => getBookingById(bookingId),
+  });
+  const booking = query.data ?? null;
+  const loading = query.isPending;
+  const error = query.error ? query.error.message || "Could not load this ticket." : null;
+  const load = query.refetch;
 
   if (loading) {
     return (
@@ -140,10 +132,18 @@ function TicketPage() {
           </caption>
           <thead>
             <tr className="border-b border-border text-left text-xs uppercase text-muted-foreground">
-              <th scope="col" className="py-1">Name</th>
-              <th scope="col" className="py-1">Age</th>
-              <th scope="col" className="py-1">Gender</th>
-              <th scope="col" className="py-1">Seat</th>
+              <th scope="col" className="py-1">
+                Name
+              </th>
+              <th scope="col" className="py-1">
+                Age
+              </th>
+              <th scope="col" className="py-1">
+                Gender
+              </th>
+              <th scope="col" className="py-1">
+                Seat
+              </th>
             </tr>
           </thead>
           <tbody>

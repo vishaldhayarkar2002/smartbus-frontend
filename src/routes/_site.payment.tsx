@@ -32,7 +32,10 @@ export const Route = createFileRoute("/_site/payment")({
         content: "Pay for your bus booking by UPI, card or net banking (simulated gateway).",
       },
       { property: "og:title", content: "Payment — SmartBus" },
-      { property: "og:description", content: "UPI, card and net banking options for your booking." },
+      {
+        property: "og:description",
+        content: "UPI, card and net banking options for your booking.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -44,7 +47,13 @@ export const Route = createFileRoute("/_site/payment")({
   ),
 });
 
-const BANKS = ["HDFC Bank", "ICICI Bank", "State Bank of India", "Axis Bank", "Kotak Mahindra Bank"];
+const BANKS = [
+  "HDFC Bank",
+  "ICICI Bank",
+  "State Bank of India",
+  "Axis Bank",
+  "Kotak Mahindra Bank",
+];
 
 function PaymentPage() {
   const navigate = useNavigate();
@@ -81,7 +90,11 @@ function PaymentPage() {
     bookingIdRef.current ??= generateBookingId(selectedSchedule!.journeyDate);
     const bookingId = bookingIdRef.current;
     try {
-      const payment = await makePayment({ bookingReference: bookingId, amount: fare.total, method });
+      const payment = await makePayment({
+        bookingReference: bookingId,
+        amount: fare.total,
+        method,
+      });
       if (!payment.success) {
         setFailure(payment.message);
         return;
@@ -261,7 +274,11 @@ function PaymentPage() {
         <aside className="surface-card h-fit space-y-4 p-5">
           <h2 className="font-bold">Fare summary</h2>
           <FareSummary fare={fare} seatCount={selectedSeats.length} />
-          <Button className="w-full" disabled={!canPay || processing} onClick={() => void handlePay()}>
+          <Button
+            className="w-full"
+            disabled={!canPay || processing}
+            onClick={() => void handlePay()}
+          >
             Pay {formatCurrency(fare.total)}
           </Button>
           <Button

@@ -46,7 +46,7 @@ function LoginPage() {
     }
   }
 
-  function useDemo(kind: "user" | "admin") {
+  function fillDemo(kind: "user" | "admin") {
     setEmail(DEMO_CREDENTIALS[kind].email);
     setPassword(DEMO_CREDENTIALS[kind].password);
   }
@@ -85,7 +85,10 @@ function LoginPage() {
           </div>
 
           {error ? (
-            <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">
+            <p
+              className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+              role="alert"
+            >
               {error}
             </p>
           ) : null}
@@ -118,10 +121,10 @@ function LoginPage() {
             </li>
           </ul>
           <div className="mt-3 flex gap-2">
-            <Button type="button" size="sm" variant="outline" onClick={() => useDemo("user")}>
+            <Button type="button" size="sm" variant="outline" onClick={() => fillDemo("user")}>
               Fill traveller
             </Button>
-            <Button type="button" size="sm" variant="outline" onClick={() => useDemo("admin")}>
+            <Button type="button" size="sm" variant="outline" onClick={() => fillDemo("admin")}>
               Fill admin
             </Button>
           </div>

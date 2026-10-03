@@ -81,9 +81,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "SmartBus | Online Bus Ticket Booking" },
-      { name: "description", content: "Search buses, pick seats and book tickets online with SmartBus." },
+      {
+        name: "description",
+        content: "Search buses, pick seats and book tickets online with SmartBus.",
+      },
       { property: "og:title", content: "SmartBus | Online Bus Ticket Booking" },
-      { property: "og:description", content: "Search buses, pick seats and book tickets online with SmartBus." },
+      {
+        property: "og:description",
+        content: "Search buses, pick seats and book tickets online with SmartBus.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },

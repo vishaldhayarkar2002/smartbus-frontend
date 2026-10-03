@@ -6,13 +6,7 @@
  * When the real API is connected, delete this file and call `api` instead —
  * the service function signatures stay the same, so no UI changes are needed.
  */
-import {
-  mockBookings,
-  mockBuses,
-  mockRoutes,
-  mockSchedules,
-  mockUsers,
-} from "@/data/mockData";
+import { mockBookings, mockBuses, mockRoutes, mockSchedules, mockUsers } from "@/data/mockData";
 import type { Booking, Bus, BusRoute, Schedule, User } from "@/types";
 
 interface Collections {

@@ -44,7 +44,8 @@ export async function login(payload: LoginRequest): Promise<AuthResponse> {
   }
   const user = readTable("users").find((u) => u.email.toLowerCase() === email);
   if (!valid || !user) return mockFailure(INVALID);
-  if (user.status === "INACTIVE") return mockFailure("This account has been deactivated. Contact support.");
+  if (user.status === "INACTIVE")
+    return mockFailure("This account has been deactivated. Contact support.");
   return mockRequest({ token: fakeToken(user), user });
 }
 
@@ -93,6 +94,9 @@ export async function changePassword(
 }
 
 export async function updateProfile(user: User): Promise<User> {
-  writeTable("users", readTable("users").map((u) => (u.id === user.id ? user : u)));
+  writeTable(
+    "users",
+    readTable("users").map((u) => (u.id === user.id ? user : u)),
+  );
   return mockRequest(user);
 }

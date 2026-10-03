@@ -13,7 +13,10 @@ export const Route = createFileRoute("/_site/booking/confirmation")({
       { title: "Booking confirmed — SmartBus" },
       { name: "description", content: "Your SmartBus booking is confirmed. View your e-ticket." },
       { property: "og:title", content: "Booking confirmed — SmartBus" },
-      { property: "og:description", content: "Booking reference, journey details and e-ticket link." },
+      {
+        property: "og:description",
+        content: "Booking reference, journey details and e-ticket link.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

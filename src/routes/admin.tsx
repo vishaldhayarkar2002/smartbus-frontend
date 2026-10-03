@@ -22,7 +22,10 @@ export const Route = createFileRoute("/admin")({
   beforeLoad: ({ location }) => {
     const session = readSession();
     if (!session?.token) {
-      throw redirect({ to: "/access-denied", search: { reason: "signin", from: location.pathname } });
+      throw redirect({
+        to: "/access-denied",
+        search: { reason: "signin", from: location.pathname },
+      });
     }
     if (session.user.role !== "ADMIN") {
       throw redirect({ to: "/access-denied", search: { reason: "role", from: location.pathname } });

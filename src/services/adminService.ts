@@ -89,7 +89,9 @@ export async function listUsers(): Promise<User[]> {
 
 export async function toggleUserStatus(id: number): Promise<User[]> {
   const next = readTable("users").map((u) =>
-    u.id === id ? { ...u, status: u.status === "ACTIVE" ? ("INACTIVE" as const) : ("ACTIVE" as const) } : u,
+    u.id === id
+      ? { ...u, status: u.status === "ACTIVE" ? ("INACTIVE" as const) : ("ACTIVE" as const) }
+      : u,
   );
   writeTable("users", next);
   return mockRequest(next, 200);

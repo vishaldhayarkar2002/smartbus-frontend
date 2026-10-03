@@ -160,19 +160,42 @@ function AdminSchedules() {
           description="Add a schedule to make a bus bookable on a route."
         />
       ) : (
-        <div className="surface-card overflow-x-auto p-5" tabIndex={0} role="region" aria-label="Scrollable data table">
+        <div
+          className="surface-card overflow-x-auto p-5"
+          tabIndex={0}
+          role="region"
+          aria-label="Scrollable data table"
+        >
           <table className="w-full min-w-[860px] text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs uppercase text-muted-foreground">
-                <th scope="col" className="py-2">Route</th>
-                <th scope="col" className="py-2">Bus</th>
-                <th scope="col" className="py-2">Date</th>
-                <th scope="col" className="py-2">Departs</th>
-                <th scope="col" className="py-2">Arrives</th>
-                <th scope="col" className="py-2">Duration</th>
-                <th scope="col" className="py-2">Fare</th>
-                <th scope="col" className="py-2">Status</th>
-                <th scope="col" className="py-2 text-right">Actions</th>
+                <th scope="col" className="py-2">
+                  Route
+                </th>
+                <th scope="col" className="py-2">
+                  Bus
+                </th>
+                <th scope="col" className="py-2">
+                  Date
+                </th>
+                <th scope="col" className="py-2">
+                  Departs
+                </th>
+                <th scope="col" className="py-2">
+                  Arrives
+                </th>
+                <th scope="col" className="py-2">
+                  Duration
+                </th>
+                <th scope="col" className="py-2">
+                  Fare
+                </th>
+                <th scope="col" className="py-2">
+                  Status
+                </th>
+                <th scope="col" className="py-2 text-right">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>

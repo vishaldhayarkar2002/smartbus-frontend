@@ -1,4 +1,9 @@
-import { useAppStore, selectSchedule, setBoardingPoint, setDroppingPoint } from "@/state/useAppStore";
+import {
+  useAppStore,
+  selectSchedule,
+  setBoardingPoint,
+  setDroppingPoint,
+} from "@/state/useAppStore";
 import { useCallback, useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Clock, MapPin, Star } from "lucide-react";
@@ -148,7 +153,10 @@ function BusDetailsPage() {
                 {schedule.boardingPoints.map((point) => (
                   <div key={point.id} className="flex items-start gap-3">
                     <RadioGroupItem id={`bp-${point.id}`} value={point.id} className="mt-1" />
-                    <Label htmlFor={`bp-${point.id}`} className="flex-col items-start gap-0.5 font-normal">
+                    <Label
+                      htmlFor={`bp-${point.id}`}
+                      className="flex-col items-start gap-0.5 font-normal"
+                    >
                       <span className="font-semibold">
                         {point.time} — {point.name}
                       </span>
@@ -178,7 +186,10 @@ function BusDetailsPage() {
                 {schedule.droppingPoints.map((point) => (
                   <div key={point.id} className="flex items-start gap-3">
                     <RadioGroupItem id={`dp-${point.id}`} value={point.id} className="mt-1" />
-                    <Label htmlFor={`dp-${point.id}`} className="flex-col items-start gap-0.5 font-normal">
+                    <Label
+                      htmlFor={`dp-${point.id}`}
+                      className="flex-col items-start gap-0.5 font-normal"
+                    >
                       <span className="font-semibold">
                         {point.time} — {point.name}
                       </span>

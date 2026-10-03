@@ -73,7 +73,12 @@ function ProfilePage() {
         <h2 className="font-bold">Personal details</h2>
         <div className="space-y-1.5">
           <Label htmlFor="fullName">Full name</Label>
-          <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+          <Input
+            id="fullName"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            required
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>

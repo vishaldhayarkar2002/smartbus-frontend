@@ -84,7 +84,6 @@ function SearchPage() {
   const [operators, setOperators] = useState<string[]>([]);
   const [sort, setSort] = useState<SortOption>("EARLIEST_DEPARTURE");
 
-
   const allOperators = useMemo(
     () => Array.from(new Set(schedules.map((s) => s.bus.operator))).sort(),
     [schedules],
@@ -133,13 +132,26 @@ function SearchPage() {
           return timeToMinutes(a.departureTime) - timeToMinutes(b.departureTime);
       }
     });
-  }, [schedules, departureSlots, arrivalSlots, maxPrice, ac, nonAc, sleeper, seater, operators, sort]);
+  }, [
+    schedules,
+    departureSlots,
+    arrivalSlots,
+    maxPrice,
+    ac,
+    nonAc,
+    sleeper,
+    seater,
+    operators,
+    sort,
+  ]);
 
   const filterPanel = (
     <div className="space-y-6">
       <div>
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">Filters</h2>
+          <h2 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
+            Filters
+          </h2>
           <Button variant="ghost" size="sm" onClick={resetFilters}>
             Clear all
           </Button>

@@ -26,7 +26,8 @@ export const Route = createFileRoute("/_site/")({
       { property: "og:title", content: "SmartBus — Book Intercity Bus Tickets Online" },
       {
         property: "og:description",
-        content: "Live seat maps, transparent fares and instant e-tickets for intercity bus travel.",
+        content:
+          "Live seat maps, transparent fares and instant e-tickets for intercity bus travel.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -95,8 +96,8 @@ function HomePage() {
             Book your next bus journey in under a minute
           </h1>
           <p className="mt-3 max-w-xl text-sm text-primary-foreground/80 sm:text-base">
-            Compare operators, choose your seat on a real seat map and pay securely. Your e-ticket is
-            ready instantly.
+            Compare operators, choose your seat on a real seat map and pay securely. Your e-ticket
+            is ready instantly.
           </p>
         </div>
       </section>

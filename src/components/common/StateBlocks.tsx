@@ -62,7 +62,10 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <div className="surface-card flex flex-col items-center gap-3 px-6 py-12 text-center" role="alert">
+    <div
+      className="surface-card flex flex-col items-center gap-3 px-6 py-12 text-center"
+      role="alert"
+    >
       <span className="flex size-12 items-center justify-center rounded-full bg-destructive/12 text-destructive">
         <AlertTriangle className="size-6" aria-hidden="true" />
       </span>

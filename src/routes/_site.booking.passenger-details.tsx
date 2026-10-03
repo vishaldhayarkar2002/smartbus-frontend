@@ -102,7 +102,9 @@ function PassengerDetailsPage() {
               <fieldset key={passenger.seatId} className="surface-card p-5">
                 <legend className="mb-3 text-sm font-bold">
                   Seat {passenger.seatNumber}
-                  {seat ? ` • ${seatTypeLabel(seat.seatType)}${seat.isWindow ? " • Window" : ""}` : ""}
+                  {seat
+                    ? ` • ${seatTypeLabel(seat.seatType)}${seat.isWindow ? " • Window" : ""}`
+                    : ""}
                 </legend>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">

@@ -34,7 +34,9 @@ export async function getAllBookings(): Promise<Booking[]> {
 
 export async function getBookingById(bookingId: string): Promise<Booking> {
   // return api.get<Booking>(`/bookings/${bookingId}`).then(r => r.data)
-  const booking = readTable("bookings").find((b) => b.bookingId === bookingId || b.id === bookingId);
+  const booking = readTable("bookings").find(
+    (b) => b.bookingId === bookingId || b.id === bookingId,
+  );
   if (!booking) return mockFailure("Booking not found. Please check the booking ID.");
   return mockRequest(booking);
 }
@@ -44,9 +46,13 @@ export async function cancelBooking(bookingId: string): Promise<Booking> {
   const bookings = readTable("bookings");
   const booking = bookings.find((b) => b.bookingId === bookingId);
   if (!booking) return mockFailure("Booking not found.");
-  if (booking.status !== "CONFIRMED") return mockFailure("Only confirmed bookings can be cancelled.");
+  if (booking.status !== "CONFIRMED")
+    return mockFailure("Only confirmed bookings can be cancelled.");
   const updated: Booking = { ...booking, status: "CANCELLED" };
-  writeTable("bookings", bookings.map((b) => (b.bookingId === bookingId ? updated : b)));
+  writeTable(
+    "bookings",
+    bookings.map((b) => (b.bookingId === bookingId ? updated : b)),
+  );
   return mockRequest(updated, 300);
 }
 

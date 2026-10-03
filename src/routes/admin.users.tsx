@@ -7,12 +7,7 @@ import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -139,21 +134,35 @@ function AdminUsers() {
       ) : error ? (
         <ErrorState message={error} onRetry={() => void load()} />
       ) : visible.length === 0 ? (
-        <EmptyState
-          title="No matching users"
-          description="Try a different name, role or status."
-        />
+        <EmptyState title="No matching users" description="Try a different name, role or status." />
       ) : (
-        <div className="surface-card overflow-x-auto p-5" tabIndex={0} role="region" aria-label="Scrollable data table">
+        <div
+          className="surface-card overflow-x-auto p-5"
+          tabIndex={0}
+          role="region"
+          aria-label="Scrollable data table"
+        >
           <table className="w-full min-w-[760px] text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs uppercase text-muted-foreground">
-                <th scope="col" className="py-2">Name</th>
-                <th scope="col" className="py-2">Contact</th>
-                <th scope="col" className="py-2">Role</th>
-                <th scope="col" className="py-2">Joined</th>
-                <th scope="col" className="py-2">Status</th>
-                <th scope="col" className="py-2 text-right">Actions</th>
+                <th scope="col" className="py-2">
+                  Name
+                </th>
+                <th scope="col" className="py-2">
+                  Contact
+                </th>
+                <th scope="col" className="py-2">
+                  Role
+                </th>
+                <th scope="col" className="py-2">
+                  Joined
+                </th>
+                <th scope="col" className="py-2">
+                  Status
+                </th>
+                <th scope="col" className="py-2 text-right">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>

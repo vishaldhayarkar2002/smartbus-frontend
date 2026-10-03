@@ -5,12 +5,7 @@ import { AdminShell } from "@/components/layout/AdminShell";
 import { EmptyState, ErrorState, LoadingSkeleton } from "@/components/common/StateBlocks";
 import { StatusBadge, bookingStatusTone } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -28,9 +23,15 @@ export const Route = createFileRoute("/admin/bookings")({
   head: () => ({
     meta: [
       { title: "All bookings — SmartBus admin" },
-      { name: "description", content: "Search, filter and inspect every booking made on SmartBus." },
+      {
+        name: "description",
+        content: "Search, filter and inspect every booking made on SmartBus.",
+      },
       { property: "og:title", content: "All bookings — SmartBus admin" },
-      { property: "og:description", content: "Booking search with status filters and detail view." },
+      {
+        property: "og:description",
+        content: "Booking search with status filters and detail view.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -101,7 +102,10 @@ function AdminBookings() {
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="booking-status">Status</Label>
-          <Select value={status} onValueChange={(value) => setStatus(value as BookingStatus | "ALL")}>
+          <Select
+            value={status}
+            onValueChange={(value) => setStatus(value as BookingStatus | "ALL")}
+          >
             <SelectTrigger id="booking-status" className="w-full">
               <SelectValue />
             </SelectTrigger>
@@ -137,18 +141,39 @@ function AdminBookings() {
           description="Try a different search term or clear the status filter."
         />
       ) : (
-        <div className="surface-card overflow-x-auto p-5" tabIndex={0} role="region" aria-label="Scrollable data table">
+        <div
+          className="surface-card overflow-x-auto p-5"
+          tabIndex={0}
+          role="region"
+          aria-label="Scrollable data table"
+        >
           <table className="w-full min-w-[760px] text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs uppercase text-muted-foreground">
-                <th scope="col" className="py-2">Booking ID</th>
-                <th scope="col" className="py-2">Customer</th>
-                <th scope="col" className="py-2">Route</th>
-                <th scope="col" className="py-2">Journey</th>
-                <th scope="col" className="py-2">Seats</th>
-                <th scope="col" className="py-2">Amount</th>
-                <th scope="col" className="py-2">Status</th>
-                <th scope="col" className="py-2 text-right">Details</th>
+                <th scope="col" className="py-2">
+                  Booking ID
+                </th>
+                <th scope="col" className="py-2">
+                  Customer
+                </th>
+                <th scope="col" className="py-2">
+                  Route
+                </th>
+                <th scope="col" className="py-2">
+                  Journey
+                </th>
+                <th scope="col" className="py-2">
+                  Seats
+                </th>
+                <th scope="col" className="py-2">
+                  Amount
+                </th>
+                <th scope="col" className="py-2">
+                  Status
+                </th>
+                <th scope="col" className="py-2 text-right">
+                  Details
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -191,8 +216,8 @@ function AdminBookings() {
                 {selected.busName} • {selected.operator}
               </p>
               <p className="text-muted-foreground">
-                {selected.source} → {selected.destination} • {formatShortDate(selected.journeyDate)} •{" "}
-                {selected.departureTime}
+                {selected.source} → {selected.destination} • {formatShortDate(selected.journeyDate)}{" "}
+                • {selected.departureTime}
               </p>
               <p className="text-muted-foreground">
                 Boarding {selected.boardingPoint.name} • Dropping {selected.droppingPoint.name}

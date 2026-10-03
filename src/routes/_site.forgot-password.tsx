@@ -61,13 +61,19 @@ function ForgotPasswordPage() {
             />
           </div>
           {message ? (
-            <p className="flex items-start gap-2 rounded-lg border border-success/30 bg-success/10 px-3 py-2 text-sm text-success" role="status">
+            <p
+              className="flex items-start gap-2 rounded-lg border border-success/30 bg-success/10 px-3 py-2 text-sm text-success"
+              role="status"
+            >
               <MailCheck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
               {message}
             </p>
           ) : null}
           {error ? (
-            <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">
+            <p
+              className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+              role="alert"
+            >
               {error}
             </p>
           ) : null}
