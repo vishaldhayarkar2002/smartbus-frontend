@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { adminKeys, errorText, useUsers } from "@/services/adminQueries";
+import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { AdminShell } from "@/components/layout/AdminShell";
@@ -41,29 +43,18 @@ export const Route = createFileRoute("/admin/users")({
 });
 
 function AdminUsers() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const q = useUsers();
+  const users = q.data ?? [];
+  const loading = q.isPending;
+  const error = q.error ? errorText(q.error, "Could not load users.") : null;
+  const load = () => q.refetch();
+  const setUsers = (data: typeof users) => queryClient.setQueryData(adminKeys.users, data);
   const [query, setQuery] = useState("");
   const [role, setRole] = useState("ALL");
   const [status, setStatus] = useState("ALL");
   const [viewing, setViewing] = useState<User | null>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      setUsers(await listUsers());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load users.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
 
   const visible = useMemo(() => {
     const term = query.trim().toLowerCase();
