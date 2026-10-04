@@ -38,16 +38,18 @@ No backend URL is hardcoded anywhere else in the codebase. Everything reads `src
 
 ## 2. Technology stack
 
-| Concern          | Choice                                 |
-| ---------------- | -------------------------------------- |
-| UI library       | React 19 + TypeScript                  |
-| Build tool       | Vite 7                                 |
-| Routing          | TanStack Router (file-based)           |
-| State management | Redux Toolkit + react-redux            |
-| HTTP client      | Axios (single configured instance)     |
-| Styling          | Tailwind CSS v4 + shadcn/ui components |
-| Icons            | lucide-react                           |
-| Notifications    | sonner toasts                          |
+| Concern          | Choice                                                       |
+| ---------------- | ------------------------------------------------------------ |
+| UI library       | React 19 + TypeScript                                        |
+| Build tool       | Vite 7                                                       |
+| Routing          | TanStack Router (file-based)                                 |
+| State management | Zustand (session + booking draft) with versioned persistence |
+| Server data      | TanStack Query (all async reads/writes)                      |
+| Validation       | Zod (search params, persisted state)                         |
+| HTTP client      | Axios (single configured instance)                           |
+| Styling          | Tailwind CSS v4 + shadcn/ui components                       |
+| Icons            | lucide-react                                                 |
+| Notifications    | sonner toasts                                                |
 
 > **Note for the viva:** the original specification mentioned React Router. This project is built on **TanStack Router** instead, because the Lovable platform fixes the routing library. The concepts are identical — file-based route definitions, nested layouts, route params, and programmatic navigation. Every URL in the specification exists exactly as written.
 
@@ -63,7 +65,7 @@ No backend URL is hardcoded anywhere else in the codebase. Everything reads `src
 | Sign in           | `/login`                     | Validated form, demo credential quick-fill, role-based redirect                                     |
 | Register          | `/register`                  | Full name, email, 10-digit mobile, password + confirm                                               |
 | Forgot password   | `/forgot-password`           | Mock reset-link request                                                                             |
-| Search results    | `/search`                    | Filters (departure / arrival slot, max price, AC, Non-AC, sleeper, seater, operator) + 5 sort modes |
+| Search results    | `/search`                    | URL-driven (`?from=&to=&journeyDate=`) — shareable and reload-safe; departure / arrival slot, price, AC, sleeper, operator filters + 5 sort modes |
 | Bus details       | `/bus/$busId`                | Amenities, boarding & dropping point tabs (both required), cancellation policy                      |
 | Seat selection    | `/booking/seat-selection`    | Top-view seat map, max 6 seats, 5-minute hold countdown                                             |
 | Passenger details | `/booking/passenger-details` | One validated form per selected seat                                                                |
@@ -73,8 +75,9 @@ No backend URL is hardcoded anywhere else in the codebase. Everything reads `src
 | E-ticket          | `/ticket/$bookingId`         | Printable ticket with QR placeholder                                                                |
 | My bookings       | `/my-bookings`               | Upcoming / Completed / Cancelled tabs, cancellation with confirm dialog                             |
 | Booking detail    | `/my-bookings/$bookingId`    | Full booking record                                                                                 |
-| Profile           | `/profile`                   | Update name / mobile, change password                                                               |
+| Profile           | `/profile`                   | Update name / mobile, change password (current password is verified)                                |
 | Help              | `/help`                      | FAQ accordion and support contacts                                                                  |
+| Access denied     | `/access-denied`             | Friendly screen when a non-admin tries an admin page or a signed-out visitor hits a protected route |
 
 ### Admin side (own sidebar layout, admin-only guard)
 
@@ -92,7 +95,7 @@ No backend URL is hardcoded anywhere else in the codebase. Everything reads `src
 
 - Every data-driven screen has **skeleton loading**, **empty** and **error-with-retry** states.
 - Fully responsive: mobile filter drawer, horizontally scrollable admin tables, mobile-friendly seat map.
-- Accessibility: labelled inputs, keyboard-operable seats and dialogs, visible focus rings, semantic headings, seat status conveyed by colour **and** icon **and** text.
+- Accessibility: labelled inputs, keyboard-operable seats and dialogs, visible focus rings, semantic headings, seat status conveyed by colour **and** icon **and** text, a skip link, and `prefers-reduced-motion` handling.
 - Seat status is never colour-only, which is a common accessibility question in a viva.
 
 ---
@@ -108,6 +111,8 @@ No backend URL is hardcoded anywhere else in the codebase. Everything reads `src
 - The same component is reused read-only on the admin seat-layouts screen (`readOnly` prop).
 
 **Seat hold:** selecting the first seat starts a single 5-minute countdown (`src/components/booking/SeatLockTimer.tsx`). It uses one effect-scoped `setInterval` with proper cleanup. On expiry the selection is cleared and an expiry notice invites the user to pick again. The hold duration lives in `SEAT_LOCK_SECONDS` in `src/config/env.ts`.
+
+On page reload an expired hold cannot be resumed: the persisted store detects `lockExpiresAt` in the past, clears the seats/passengers and shows the expiry notice instead.
 
 ---
 
@@ -127,10 +132,11 @@ src/
 │   └── mockData.ts     ALL mock datasets + deterministic buildSeatMap()
 ├── routes/             file-based pages (_site.* = public shell, admin.* = admin shell)
 ├── services/           api.ts + authService, busService, bookingService,
-│                       paymentService, adminService
-├── store/
-│   ├── store.ts, hooks.ts
-│   └── slices/         authSlice, searchSlice, bookingSlice
+│                       paymentService, adminService, adminQueries (shared
+│                       TanStack Query keys/hooks), mockDb (localStorage persistence)
+├── state/
+│   └── useAppStore.ts  Zustand store: auth session + booking draft, versioned
+│                       persistence with Zod-validated hydration
 ├── types/
 │   └── index.ts        every shared interface, shaped like a REST response
 ├── utils/              fare.ts (tax + convenience fee), format.ts (currency, dates, time)
@@ -143,23 +149,33 @@ Path alias: `@/` → `src/`.
 
 ## 6. State management
 
-| Slice     | Holds                                                                         | Persisted      |
-| --------- | ----------------------------------------------------------------------------- | -------------- |
-| `auth`    | `user`, `token`, `isAuthenticated`, `hydrated`                                | `localStorage` |
-| `search`  | `from`, `to`, `journeyDate`                                                   | in memory      |
-| `booking` | schedule, boarding/dropping point, seats, passengers, fare, confirmed booking | `localStorage` |
+| Owner                  | Holds                                                                                   | Persistence                     |
+| ---------------------- | --------------------------------------------------------------------------------------- | ------------------------------- |
+| Zustand (`useAppStore`)| `auth` (user, token, isAuthenticated, hydrated) and the `booking` draft (schedule, boarding/dropping points, seats, passengers, fare, lock expiry, confirmed booking) | `localStorage` (versioned, Zod-validated on hydration; unknown versions are dropped, expired holds are cleared) |
+| Zustand `search`       | Last from / to / journeyDate — prefill only. **The URL is the source of truth for search** | in memory                       |
+| TanStack Query         | Search results, seat maps, my bookings, profile data, payment, all admin tables (see `adminQueries.ts`) | query cache, invalidated after every write |
 
 Purely visual state (open dialogs, active tab, filter panel) stays in local component state — deliberately, to avoid over-engineering.
 
+Booking IDs are generated with `crypto.randomUUID()`-based references (collision-safe, e.g. `SB2026092500123`).
+
 ---
 
-## 7. Mock data
+## 7. Mock data and persistence
 
-Everything lives in `src/data/mockData.ts`:
+Mock datasets live in `src/data/mockData.ts`:
 
 `mockUsers` (5) · `mockRoutes` (5) · `mockBuses` (6) · `mockSchedules` · `mockBookings` (5) · `POPULAR_ROUTES` · `DEMO_CREDENTIALS` · `CITIES` · `DEFAULT_JOURNEY_DATE` (`2026-09-25`).
 
 `buildSeatMap(scheduleId)` **generates** the seat map deterministically from the bus layout: berth/seat numbering, window flags at the edges, a ₹50 lower-deck premium, a ₹30 front-row premium, and a fixed pattern of already-booked and on-hold seats so the same seats appear taken on every render.
+
+**Persistence (`src/services/mockDb.ts`):** every collection (users, buses, routes, schedules, bookings) is stored in `localStorage` under the `smartbus.db.*` prefix, seeded from the mock datasets on first read. Admin edits, registrations, bookings and cancellations therefore **survive page refreshes**, exactly like a future database table. Corrupted rows fall back to seed data instead of crashing; `resetDatabase()` restores the demo to seed state.
+
+Reliability guarantees already built in (each maps to a real backend concern):
+
+- `paymentService` settles charges by booking reference — retrying the same reference never charges twice (idempotency key).
+- `createBooking` is idempotent by booking ID and **revalidates the seat hold** before inserting, refusing seats that were sold since selection.
+- `authService` stores a SHA-256 hash of `email:password` (mock only — a real server must use bcrypt/argon2); login verifies it, register saves it, `changePassword` requires the current password.
 
 Services simulate a network round trip via `mockRequest(data, delay)` / `mockFailure(message)`. Payment succeeds ~85% of the time so the failure screen is reachable and demonstrable.
 
@@ -190,7 +206,7 @@ Every mock has the same shape. Delete the mock body, uncomment the real call:
 ```ts
 // BEFORE (mock)
 export async function searchBuses(query: SearchQuery): Promise<Schedule[]> {
-  const results = mockSchedules.filter(/* … */);
+  const results = readTable("schedules").filter(/* … */);
   return mockRequest(results);
 }
 
@@ -201,7 +217,7 @@ export async function searchBuses(query: SearchQuery): Promise<Schedule[]> {
 }
 ```
 
-Nothing else changes — the return type is identical, so pages, filters and Redux slices are untouched.
+Nothing else changes — the return type is identical, so pages, filters, Zustand and TanStack Query are untouched. When `mockDb.ts` is replaced by the API, delete it.
 
 ### Step 2 — endpoint map
 
@@ -261,8 +277,10 @@ Every interface in `src/types/index.ts` is already shaped like a Spring Boot JSO
 
 ### Step 4 — security
 
-- Spring Security issues the JWT on `/auth/login`; the request interceptor sends it back on every call.
-- Keep `RequireAuth` as a UX guard only. **Real authorisation must be enforced server-side** with `@PreAuthorize("hasRole('ADMIN')")` on admin controllers — a client-side guard can always be bypassed.
+- Spring Security issues the JWT on `/auth/login`; the request interceptor sends it back on every call. For browser sessions, prefer an **HttpOnly, Secure, SameSite cookie** issued by the server.
+- Keep `RequireAuth` and the admin route guard as UX guards only. **Real authorisation must be enforced server-side** with `@PreAuthorize("hasRole('ADMIN')")` on admin controllers — a client-side guard can always be bypassed.
+- Hash passwords with bcrypt/argon2 on the server; the frontend's SHA-256 hashing exists only to make the mock behave realistically.
+- Seat locks need a server-side TTL (e.g. `/seats/{id}/lock` returning `lockedUntil`), and booking creation should re-check seat availability transactionally — both behaviours are already simulated client-side.
 
 ---
 
@@ -275,19 +293,19 @@ The scope is the frontend. The architecture isolates every data access behind a 
 It is a pure function of the seat array. `buildSeatMap` produces positions; `SeatLayout` groups seats by row and deck and inserts the aisle from the column count. A different bus layout renders correctly with zero component changes.
 
 **How does the 5-minute seat hold work, and why one interval?**
-A single `setInterval` inside one `useEffect`, cleared on unmount. Multiple intervals (one per seat) would drift and leak. The expiry dispatches a Redux action that clears the selection, which is also what a real `/seats/{id}/lock` TTL expiry would trigger.
+A single `setInterval` inside one `useEffect`, cleared on unmount. Multiple intervals (one per seat) would drift and leak. The expiry dispatches a Zustand action that clears the selection — the same thing a real `/seats/{id}/lock` TTL expiry would trigger.
 
-**Where does the fare come from?**
-`src/utils/fare.ts`: base fare is the sum of selected seat prices, taxes are 5%, plus a flat ₹20 convenience fee. One function feeds the review page, the payment page and the ticket, so the totals can never disagree.
+**Why Zustand and TanStack Query, and not just React state?**
+The auth session and the in-progress booking must survive a refresh, so they live in a Zustand store persisted to `localStorage` with a **versioned, Zod-validated schema** — stale or corrupt data is discarded instead of crashing the app. Everything fetched from "the server" (search results, bookings, admin tables) lives in TanStack Query with stable keys, so a cancellation or admin edit invalidates exactly the queries that depend on it. UI-only state deliberately stays local — using one store for everything would be over-engineering.
 
-**Why Redux Toolkit and not just React state?**
-Auth and the in-progress booking are needed across many routes and must survive a refresh. UI-only state deliberately stays local — using Redux for everything would be over-engineering.
+**Why is the search state in the URL?**
+`/search?from=Pune&to=Mumbai&journeyDate=2026-09-25` is validated with Zod, so results are shareable, survive a reload, and survive a new tab — exactly like a REST GET endpoint with query parameters. The store only pre-fills the form.
 
 **How is the app made accessible?**
-Labelled inputs, real `<button>` seats with `aria-pressed` and descriptive `aria-label`, seat status shown by icon and text as well as colour, focus-visible rings, semantic landmarks and headings, and accessible dialogs from shadcn/ui.
+Labelled inputs, real `<button>` seats with `aria-pressed` and descriptive `aria-label`, seat status shown by icon and text as well as colour, focus-visible rings, a skip link, semantic landmarks and headings, and accessible dialogs from shadcn/ui.
 
 **What would you do next with a real backend?**
-Server-side seat locking with a TTL, idempotent booking creation, a real payment gateway webhook, server-side pagination on admin tables, and role checks enforced in Spring Security.
+Server-side seat locking with a TTL, idempotent booking creation (already simulated client-side), a real payment gateway webhook, server-side pagination on admin tables, and role checks enforced in Spring Security.
 
 ---
 
