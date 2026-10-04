@@ -1,11 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { BusFront, IndianRupee, Ticket, Users } from "lucide-react";
 import { AdminShell } from "@/components/layout/AdminShell";
 import { ErrorState, LoadingSkeleton } from "@/components/common/StateBlocks";
 import { StatusBadge, bookingStatusTone } from "@/components/common/StatusBadge";
-import { getAllBookings } from "@/services/bookingService";
-import { listBuses, listUsers } from "@/services/adminService";
+import { errorText, useAllBookings, useBuses, useUsers } from "@/services/adminQueries";
 import type { Booking } from "@/types";
 import { formatCurrency, formatShortDate } from "@/utils/format";
 
@@ -27,40 +25,25 @@ export const Route = createFileRoute("/admin/")({
 });
 
 function AdminDashboard() {
-  const [stats, setStats] = useState({ users: 0, buses: 0, todayBookings: 0, todayRevenue: 0 });
-  const [recent, setRecent] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const uq = useUsers();
+  const bq = useBuses();
+  const kq = useAllBookings();
+  const loading = uq.isPending || bq.isPending || kq.isPending;
+  const firstError = uq.error ?? bq.error ?? kq.error;
+  const error = firstError ? errorText(firstError, "Could not load the dashboard.") : null;
+  const load = () => Promise.all([uq.refetch(), bq.refetch(), kq.refetch()]);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const [users, buses, bookings] = await Promise.all([
-        listUsers(),
-        listBuses(),
-        getAllBookings(),
-      ]);
-      const today = "2026-09-25";
-      setStats({
-        users: users.length,
-        buses: buses.length,
-        todayBookings: bookings.filter((b) => b.journeyDate === today).length,
-        todayRevenue: bookings
-          .filter((b) => b.journeyDate === today && b.status !== "CANCELLED")
-          .reduce((sum, b) => sum + b.fare.total, 0),
-      });
-      setRecent([...bookings].sort((a, b) => b.bookedAt.localeCompare(a.bookedAt)).slice(0, 5));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load the dashboard.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const bookings: Booking[] = kq.data ?? [];
+  const today = "2026-09-25";
+  const stats = {
+    users: uq.data?.length ?? 0,
+    buses: bq.data?.length ?? 0,
+    todayBookings: bookings.filter((b) => b.journeyDate === today).length,
+    todayRevenue: bookings
+      .filter((b) => b.journeyDate === today && b.status !== "CANCELLED")
+      .reduce((sum, b) => sum + b.fare.total, 0),
+  };
+  const recent = [...bookings].sort((a, b) => b.bookedAt.localeCompare(a.bookedAt)).slice(0, 5);
 
   const tiles = [
     { label: "Registered users", value: String(stats.users), icon: Users },

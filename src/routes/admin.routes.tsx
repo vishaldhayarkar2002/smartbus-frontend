@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { adminKeys, errorText, useRoutes } from "@/services/adminQueries";
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
 import { AdminShell } from "@/components/layout/AdminShell";
@@ -41,27 +43,17 @@ const emptyRoute: BusRoute = {
   status: "ACTIVE",
 };
 
+const EMPTY: never[] = [];
+
 function AdminRoutes() {
-  const [routes, setRoutes] = useState<BusRoute[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const q = useRoutes();
+  const routes = q.data ?? EMPTY;
+  const loading = q.isPending;
+  const error = q.error ? errorText(q.error, "Could not load routes.") : null;
+  const load = () => q.refetch();
+  const setRoutes = (data: typeof routes) => queryClient.setQueryData(adminKeys.routes, data);
   const [editing, setEditing] = useState<BusRoute | null>(null);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      setRoutes(await listRoutes());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load routes.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
 
   async function handleSave(event: React.FormEvent) {
     event.preventDefault();

@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { adminKeys, errorText, useBuses } from "@/services/adminQueries";
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
 import { AdminShell } from "@/components/layout/AdminShell";
@@ -55,27 +57,17 @@ const emptyBus: Bus = {
   active: true,
 };
 
+const EMPTY: never[] = [];
+
 function AdminBuses() {
-  const [buses, setBuses] = useState<Bus[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const q = useBuses();
+  const buses = q.data ?? EMPTY;
+  const loading = q.isPending;
+  const error = q.error ? errorText(q.error, "Could not load buses.") : null;
+  const load = () => q.refetch();
+  const setBuses = (data: typeof buses) => queryClient.setQueryData(adminKeys.buses, data);
   const [editing, setEditing] = useState<Bus | null>(null);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      setBuses(await listBuses());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load buses.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
 
   async function handleSave(event: React.FormEvent) {
     event.preventDefault();

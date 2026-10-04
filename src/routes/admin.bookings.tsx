@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { adminKeys, errorText, useAllBookings } from "@/services/adminQueries";
+import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { AdminShell } from "@/components/layout/AdminShell";
@@ -39,30 +41,20 @@ export const Route = createFileRoute("/admin/bookings")({
   component: AdminBookings,
 });
 
+const EMPTY: never[] = [];
+
 function AdminBookings() {
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const q = useAllBookings();
+  const bookings = q.data ?? EMPTY;
+  const loading = q.isPending;
+  const error = q.error ? errorText(q.error, "Could not load bookings.") : null;
+  const load = () => q.refetch();
+  const setBookings = (data: typeof bookings) => queryClient.setQueryData(adminKeys.bookings, data);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<BookingStatus | "ALL">("ALL");
   const [sort, setSort] = useState<"NEWEST" | "AMOUNT">("NEWEST");
   const [selected, setSelected] = useState<Booking | null>(null);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      setBookings(await getAllBookings());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load bookings.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
 
   const visible = useMemo(() => {
     const term = query.trim().toLowerCase();

@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { errorText, useSchedules } from "@/services/adminQueries";
 import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/layout/AdminShell";
 import { EmptyState, ErrorState, LoadingSkeleton } from "@/components/common/StateBlocks";
@@ -36,6 +38,8 @@ export const Route = createFileRoute("/admin/seats")({
   component: AdminSeats,
 });
 
+const EMPTY_SEATS: Seat[] = [];
+
 function StatTile({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-border bg-card px-4 py-3">
@@ -46,48 +50,23 @@ function StatTile({ label, value }: { label: string; value: string }) {
 }
 
 function AdminSeats() {
-  const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const [selectedId, setSelectedId] = useState<string>("");
-  const [seats, setSeats] = useState<Seat[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [seatsLoading, setSeatsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [seatsError, setSeatsError] = useState<string | null>(null);
+  const sq = useSchedules();
+  const schedules: Schedule[] = sq.data ?? [];
+  const [picked, setSelectedId] = useState<string>("");
+  const selectedId = picked || (schedules[0] ? String(schedules[0].id) : "");
+  const loading = sq.isPending;
+  const error = sq.error ? errorText(sq.error, "Could not load schedules.") : null;
+  const loadSchedules = () => sq.refetch();
 
-  const loadSchedules = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const list = await listSchedules();
-      setSchedules(list);
-      if (list[0]) setSelectedId(String(list[0].id));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load schedules.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const loadSeats = useCallback(async (scheduleId: string) => {
-    if (!scheduleId) return;
-    setSeatsLoading(true);
-    setSeatsError(null);
-    try {
-      setSeats(await getSeats(Number(scheduleId)));
-    } catch (err) {
-      setSeatsError(err instanceof Error ? err.message : "Could not load the seat layout.");
-    } finally {
-      setSeatsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void loadSchedules();
-  }, [loadSchedules]);
-
-  useEffect(() => {
-    void loadSeats(selectedId);
-  }, [selectedId, loadSeats]);
+  const seatQ = useQuery({
+    queryKey: ["seats", selectedId],
+    queryFn: () => getSeats(Number(selectedId)),
+    enabled: Boolean(selectedId),
+  });
+  const seats: Seat[] = seatQ.data ?? EMPTY_SEATS;
+  const seatsLoading = seatQ.isFetching && !seatQ.data;
+  const seatsError = seatQ.error ? errorText(seatQ.error, "Could not load the seat layout.") : null;
+  const loadSeats = (_id: string) => seatQ.refetch();
 
   const selected = schedules.find((s) => String(s.id) === selectedId);
 

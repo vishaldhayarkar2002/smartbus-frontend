@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { adminKeys, errorText, useBuses, useRoutes, useSchedules } from "@/services/adminQueries";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
 import { AdminShell } from "@/components/layout/AdminShell";
@@ -64,31 +66,19 @@ function computeDuration(departure: string, arrival: string): string {
 }
 
 function AdminSchedules() {
-  const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const [buses, setBuses] = useState<Bus[]>([]);
-  const [routes, setRoutes] = useState<BusRoute[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const sq = useSchedules();
+  const bq = useBuses();
+  const rq = useRoutes();
+  const schedules: Schedule[] = sq.data ?? [];
+  const buses: Bus[] = bq.data ?? [];
+  const routes: BusRoute[] = rq.data ?? [];
+  const loading = sq.isPending || bq.isPending || rq.isPending;
+  const firstError = sq.error ?? bq.error ?? rq.error;
+  const error = firstError ? errorText(firstError, "Could not load schedules.") : null;
+  const load = () => Promise.all([sq.refetch(), bq.refetch(), rq.refetch()]);
+  const setSchedules = (data: Schedule[]) => queryClient.setQueryData(adminKeys.schedules, data);
   const [editing, setEditing] = useState<Schedule | null>(null);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const [s, b, r] = await Promise.all([listSchedules(), listBuses(), listRoutes()]);
-      setSchedules(s);
-      setBuses(b);
-      setRoutes(r);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load schedules.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
 
   function startNew() {
     const bus = buses[0];
