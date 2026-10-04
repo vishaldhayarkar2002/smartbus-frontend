@@ -43,16 +43,17 @@ const emptyRoute: BusRoute = {
   status: "ACTIVE",
 };
 
+const EMPTY: never[] = [];
+
 function AdminRoutes() {
   const queryClient = useQueryClient();
   const q = useRoutes();
-  const routes = q.data ?? [];
+  const routes = q.data ?? EMPTY;
   const loading = q.isPending;
   const error = q.error ? errorText(q.error, "Could not load routes.") : null;
   const load = () => q.refetch();
   const setRoutes = (data: typeof routes) => queryClient.setQueryData(adminKeys.routes, data);
   const [editing, setEditing] = useState<BusRoute | null>(null);
-
 
   async function handleSave(event: React.FormEvent) {
     event.preventDefault();

@@ -57,16 +57,17 @@ const emptyBus: Bus = {
   active: true,
 };
 
+const EMPTY: never[] = [];
+
 function AdminBuses() {
   const queryClient = useQueryClient();
   const q = useBuses();
-  const buses = q.data ?? [];
+  const buses = q.data ?? EMPTY;
   const loading = q.isPending;
   const error = q.error ? errorText(q.error, "Could not load buses.") : null;
   const load = () => q.refetch();
   const setBuses = (data: typeof buses) => queryClient.setQueryData(adminKeys.buses, data);
   const [editing, setEditing] = useState<Bus | null>(null);
-
 
   async function handleSave(event: React.FormEvent) {
     event.preventDefault();

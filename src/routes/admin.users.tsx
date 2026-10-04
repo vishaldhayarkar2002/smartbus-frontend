@@ -42,10 +42,12 @@ export const Route = createFileRoute("/admin/users")({
   component: AdminUsers,
 });
 
+const EMPTY: never[] = [];
+
 function AdminUsers() {
   const queryClient = useQueryClient();
   const q = useUsers();
-  const users = q.data ?? [];
+  const users = q.data ?? EMPTY;
   const loading = q.isPending;
   const error = q.error ? errorText(q.error, "Could not load users.") : null;
   const load = () => q.refetch();
@@ -54,7 +56,6 @@ function AdminUsers() {
   const [role, setRole] = useState("ALL");
   const [status, setStatus] = useState("ALL");
   const [viewing, setViewing] = useState<User | null>(null);
-
 
   const visible = useMemo(() => {
     const term = query.trim().toLowerCase();

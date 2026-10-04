@@ -38,6 +38,8 @@ export const Route = createFileRoute("/admin/seats")({
   component: AdminSeats,
 });
 
+const EMPTY_SEATS: Seat[] = [];
+
 function StatTile({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-border bg-card px-4 py-3">
@@ -61,7 +63,7 @@ function AdminSeats() {
     queryFn: () => getSeats(Number(selectedId)),
     enabled: Boolean(selectedId),
   });
-  const seats: Seat[] = seatQ.data ?? [];
+  const seats: Seat[] = seatQ.data ?? EMPTY_SEATS;
   const seatsLoading = seatQ.isFetching && !seatQ.data;
   const seatsError = seatQ.error ? errorText(seatQ.error, "Could not load the seat layout.") : null;
   const loadSeats = (_id: string) => seatQ.refetch();

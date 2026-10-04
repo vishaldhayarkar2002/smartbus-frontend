@@ -1,12 +1,6 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  adminKeys,
-  errorText,
-  useBuses,
-  useRoutes,
-  useSchedules,
-} from "@/services/adminQueries";
+import { adminKeys, errorText, useBuses, useRoutes, useSchedules } from "@/services/adminQueries";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
 import { AdminShell } from "@/components/layout/AdminShell";

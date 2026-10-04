@@ -41,10 +41,12 @@ export const Route = createFileRoute("/admin/bookings")({
   component: AdminBookings,
 });
 
+const EMPTY: never[] = [];
+
 function AdminBookings() {
   const queryClient = useQueryClient();
   const q = useAllBookings();
-  const bookings = q.data ?? [];
+  const bookings = q.data ?? EMPTY;
   const loading = q.isPending;
   const error = q.error ? errorText(q.error, "Could not load bookings.") : null;
   const load = () => q.refetch();
@@ -53,7 +55,6 @@ function AdminBookings() {
   const [status, setStatus] = useState<BookingStatus | "ALL">("ALL");
   const [sort, setSort] = useState<"NEWEST" | "AMOUNT">("NEWEST");
   const [selected, setSelected] = useState<Booking | null>(null);
-
 
   const visible = useMemo(() => {
     const term = query.trim().toLowerCase();
