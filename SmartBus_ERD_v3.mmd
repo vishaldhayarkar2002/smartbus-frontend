@@ -1,0 +1,162 @@
+erDiagram
+    USERS ||--o{ BOOKINGS : places
+    USERS ||--o{ SEAT_LOCKS : holds
+    USERS ||--o{ REVIEWS : writes
+    USERS ||--o{ REFRESH_TOKENS : owns
+    USERS ||--o{ AUDIT_LOG : "performs"
+    BUSES ||--o{ BUS_AMENITIES : has
+    BUSES ||--o{ SEATS : "seat layout"
+    BUSES ||--o{ SCHEDULES : runs
+    ROUTES ||--o{ SCHEDULES : serves
+    ROUTES ||--o{ ROUTE_STOPS : "boarding and dropping"
+    SCHEDULES ||--o{ CANCELLATION_RULES : has
+    SCHEDULES ||--o{ BOOKINGS : for
+    SCHEDULES ||--o{ SEAT_LOCKS : on
+    SCHEDULES ||--o{ REVIEWS : receives
+    SEATS ||--o{ SEAT_LOCKS : locked
+    SEATS ||--o{ BOOKING_PASSENGERS : assigned
+    BOOKINGS ||--|{ BOOKING_PASSENGERS : contains
+    BOOKINGS ||--o{ PAYMENTS : "paid by"
+    ROUTE_STOPS ||--o{ BOOKINGS : "boarding point"
+    ROUTE_STOPS ||--o{ BOOKINGS : "dropping point"
+
+    USERS {
+        bigint id PK
+        varchar full_name
+        varchar email UK
+        varchar mobile
+        varchar password_hash "bcrypt, server-side only"
+        enum role "USER, ADMIN"
+        enum status "ACTIVE, INACTIVE"
+        datetime created_at
+    }
+    REFRESH_TOKENS {
+        bigint id PK
+        bigint user_id FK
+        varchar token_hash UK "store hash, never the raw token"
+        datetime expires_at
+        boolean revoked "rotation: revoke old on refresh"
+        datetime created_at
+    }
+    AUDIT_LOG {
+        bigint id PK
+        bigint user_id FK "who did it"
+        varchar action "LOGIN, BOOKING_CREATED, BOOKING_CANCELLED, ADMIN_EDIT..."
+        varchar entity_type "BOOKING, SCHEDULE, USER..."
+        varchar entity_id
+        varchar details "JSON snapshot of before/after"
+        datetime created_at
+    }
+    BUSES {
+        bigint id PK
+        varchar bus_number UK
+        varchar operator
+        varchar bus_name
+        enum bus_type "AC_SLEEPER, NON_AC_SLEEPER, AC_SEATER, NON_AC_SEATER"
+        enum layout_type "SEATER, SLEEPER"
+        int total_seats
+        boolean active
+    }
+    BUS_AMENITIES {
+        bigint id PK
+        bigint bus_id FK
+        varchar name
+    }
+    ROUTES {
+        bigint id PK
+        varchar source
+        varchar destination
+        int distance_km
+        varchar estimated_duration "route metadata, not derived"
+        enum status "ACTIVE, INACTIVE"
+    }
+    ROUTE_STOPS {
+        bigint id PK
+        bigint route_id FK "reusable across all schedules on the route"
+        enum type "BOARDING, DROPPING"
+        varchar stop_name
+        int stop_order
+        int offset_minutes "stop time = schedule departure + offset"
+        varchar landmark
+    }
+    SCHEDULES {
+        bigint id PK
+        bigint bus_id FK
+        bigint route_id FK
+        time departure_time
+        time arrival_time "duration derived: arrival - departure, not stored"
+        decimal base_fare
+        boolean active
+    }
+    REVIEWS {
+        bigint id PK
+        bigint user_id FK
+        bigint schedule_id FK
+        int rating "1-5; schedule rating aggregated at query time"
+        varchar comment
+        datetime created_at
+    }
+    CANCELLATION_RULES {
+        bigint id PK
+        bigint schedule_id FK
+        varchar rule_text
+        int refund_percentage
+        int hours_before_departure
+    }
+    SEATS {
+        varchar id PK
+        bigint bus_id FK "UK(bus_id, seat_number)"
+        varchar seat_number
+        enum seat_type "SEATER, SLEEPER_LOWER, SLEEPER_UPPER"
+        int row_no
+        int column_no
+        enum deck "LOWER, UPPER"
+        decimal price_extra
+        boolean is_window
+    }
+    SEAT_LOCKS {
+        bigint id PK
+        bigint schedule_id FK
+        varchar seat_id FK
+        date journey_date
+        bigint user_id FK
+        datetime locked_until "UK(schedule_id, seat_id, journey_date); expired excluded by locked_until; use Redis TTL in production"
+    }
+    BOOKINGS {
+        bigint id PK
+        varchar booking_ref UK "idempotency key: same ref = same booking returned"
+        bigint user_id FK
+        bigint schedule_id FK
+        date journey_date
+        bigint boarding_stop_id FK
+        bigint dropping_stop_id FK
+        decimal base_fare
+        decimal taxes
+        decimal convenience_fee
+        decimal total
+        enum status "PENDING, CONFIRMED, COMPLETED, CANCELLED"
+        datetime booked_at
+    }
+    BOOKING_PASSENGERS {
+        bigint id PK
+        bigint booking_id FK
+        bigint schedule_id FK "copied from booking: enables double-booking guard"
+        date journey_date "copied from booking: enables double-booking guard"
+        varchar seat_id FK
+        tinyint active_flag "1 when active, NULL when cancelled; UK(schedule_id, journey_date, seat_id, active_flag) blocks double-booking, MySQL allows many NULLs"
+        varchar seat_number "intentional snapshot: e-ticket keeps original number even if layout changes"
+        varchar name
+        int age
+        enum gender "MALE, FEMALE, OTHER"
+        varchar mobile
+    }
+    PAYMENTS {
+        bigint id PK
+        bigint booking_id FK
+        varchar transaction_id UK "same transaction can never be recorded twice"
+        decimal amount
+        enum method "UPI, CARD, NETBANKING"
+        enum status "INITIATED, SUCCESS, FAILED"
+        varchar message
+        datetime paid_at
+    }
