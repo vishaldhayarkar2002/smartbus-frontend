@@ -284,9 +284,9 @@ Every interface in `src/types/index.ts` is already shaped like a Spring Boot JSO
 
 ### Step 5 — database design (ERD)
 
-The database schema for the Spring Boot backend lives in `SmartBus_ERD_v2.mmd` (Mermaid `erDiagram`, renderable on mermaid.live or in any Markdown viewer with Mermaid support). It is normalised to 3NF/BCNF:
+The final database schema for the Spring Boot backend lives in **`SmartBus_ERD_v3.mmd`** (Mermaid `erDiagram`, renderable on mermaid.live or in any Markdown viewer with Mermaid support). It is normalised to 3NF/BCNF and supersedes the earlier v1/v2 drafts:
 
-- **Users & auth:** `USERS` (password stored as a bcrypt hash, never plain text).
+- **Users & auth:** `USERS` (password stored as a bcrypt hash, never plain text), `REFRESH_TOKENS` (hashed tokens, revoked on rotation), `AUDIT_LOG` (who did what: logins, bookings, cancellations, admin edits — with a JSON before/after snapshot).
 - **Bus catalogue:** `BUSES`, `BUS_AMENITIES`, `SEATS` (the physical layout per bus, unique on `(bus_id, seat_number)`), `ROUTES`, `ROUTE_STOPS`, `SCHEDULES`, `CANCELLATION_RULES`, `REVIEWS`.
 - **Booking:** `BOOKINGS`, `BOOKING_PASSENGERS`, `PAYMENTS`, `SEAT_LOCKS`.
 
@@ -294,7 +294,8 @@ The database schema for the Spring Boot backend lives in `SmartBus_ERD_v2.mmd` (
 
 - `SCHEDULES` does **not** store `duration`, `rating` or `total_reviews`. Duration is derived (`arrival_time − departure_time`); ratings are aggregated from the `REVIEWS` table at query time. Storing them would be a 3NF transitive-dependency violation and cause update anomalies on every new review.
 - Boarding/dropping points hang off `ROUTE_STOPS (route_id)`, not the schedule, so the same stops are defined once per route instead of being duplicated for every daily schedule. A stop's time on a given schedule is `departure_time + offset_minutes`.
-- `BOOKINGS` has no `payment_method` column — the method is read from the successful `PAYMENTS` row, so a failed card attempt followed by a successful UPI retry can never leave the two tables disagreeing. `PAYMENTS.status` is `INITIATED / SUCCESS / FAILED`.
+- `BOOKINGS` has no `payment_method` column — the method is read from the successful `PAYMENTS` row, so a failed card attempt followed by a successful UPI retry can never leave the two tables disagreeing. `PAYMENTS.status` is `INITIATED / SUCCESS / FAILED`, and `PAYMENTS.transaction_id` is unique so the same transaction can never be recorded twice.
+- **Double-booking prevention:** `BOOKING_PASSENGERS` copies `schedule_id` and `journey_date` from its booking and carries an `active_flag` — `1` while active, set to `NULL` when the booking is cancelled. The constraint `UNIQUE(schedule_id, journey_date, seat_id, active_flag)` makes it impossible to sell the same seat twice for the same journey; MySQL permits multiple `NULL`s, so cancelling a booking never blocks that seat from being resold. Cancellation keeps the rows (audit history) and frees the seat.
 - `BOOKING_PASSENGERS.seat_number` is a **deliberate denormalisation**: an e-ticket must show the seat number as sold, even if the bus layout is edited later. It is a historical snapshot, not an oversight.
 - `SEAT_LOCKS` has a composite unique constraint `UNIQUE(schedule_id, seat_id, journey_date)` so a seat can never be locked twice for the same journey; expired locks are excluded by comparing `locked_until` (or offloaded to Redis with a TTL in production).
 - `BOOKINGS.booking_ref` is the idempotency key — retrying a payment or booking submission with the same reference returns the original record instead of creating a duplicate.
