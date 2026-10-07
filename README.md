@@ -282,6 +282,23 @@ Every interface in `src/types/index.ts` is already shaped like a Spring Boot JSO
 - Hash passwords with bcrypt/argon2 on the server; the frontend's SHA-256 hashing exists only to make the mock behave realistically.
 - Seat locks need a server-side TTL (e.g. `/seats/{id}/lock` returning `lockedUntil`), and booking creation should re-check seat availability transactionally — both behaviours are already simulated client-side.
 
+### Step 5 — database design (ERD)
+
+The database schema for the Spring Boot backend lives in `SmartBus_ERD_v2.mmd` (Mermaid `erDiagram`, renderable on mermaid.live or in any Markdown viewer with Mermaid support). It is normalised to 3NF/BCNF:
+
+- **Users & auth:** `USERS` (password stored as a bcrypt hash, never plain text).
+- **Bus catalogue:** `BUSES`, `BUS_AMENITIES`, `SEATS` (the physical layout per bus, unique on `(bus_id, seat_number)`), `ROUTES`, `ROUTE_STOPS`, `SCHEDULES`, `CANCELLATION_RULES`, `REVIEWS`.
+- **Booking:** `BOOKINGS`, `BOOKING_PASSENGERS`, `PAYMENTS`, `SEAT_LOCKS`.
+
+**Normalisation notes (good viva material):**
+
+- `SCHEDULES` does **not** store `duration`, `rating` or `total_reviews`. Duration is derived (`arrival_time − departure_time`); ratings are aggregated from the `REVIEWS` table at query time. Storing them would be a 3NF transitive-dependency violation and cause update anomalies on every new review.
+- Boarding/dropping points hang off `ROUTE_STOPS (route_id)`, not the schedule, so the same stops are defined once per route instead of being duplicated for every daily schedule. A stop's time on a given schedule is `departure_time + offset_minutes`.
+- `BOOKINGS` has no `payment_method` column — the method is read from the successful `PAYMENTS` row, so a failed card attempt followed by a successful UPI retry can never leave the two tables disagreeing. `PAYMENTS.status` is `INITIATED / SUCCESS / FAILED`.
+- `BOOKING_PASSENGERS.seat_number` is a **deliberate denormalisation**: an e-ticket must show the seat number as sold, even if the bus layout is edited later. It is a historical snapshot, not an oversight.
+- `SEAT_LOCKS` has a composite unique constraint `UNIQUE(schedule_id, seat_id, journey_date)` so a seat can never be locked twice for the same journey; expired locks are excluded by comparing `locked_until` (or offloaded to Redis with a TTL in production).
+- `BOOKINGS.booking_ref` is the idempotency key — retrying a payment or booking submission with the same reference returns the original record instead of creating a duplicate.
+
 ---
 
 ## 9. Viva defence — likely questions and answers
